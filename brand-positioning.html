@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PositionIQ — Find Your Brand's True Position</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink: #0e0b07;
+    --cream: #f5f0e8;
+    --gold: #c9933a;
+    --gold-light: #e8c87a;
+    --rust: #b84c2b;
+    --sage: #5a7a5e;
+    --warm-grey: #8a8278;
+    --paper: #faf7f2;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--cream);
+    color: var(--ink);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── NOISE TEXTURE ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 999;
+    opacity: 0.6;
+  }
+
+  /* ── HERO ── */
+  #hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 60px 24px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 20%, rgba(201,147,58,0.12) 0%, transparent 70%),
+      radial-gradient(ellipse 60% 50% at 80% 80%, rgba(90,122,94,0.08) 0%, transparent 60%),
+      var(--cream);
+    z-index: 0;
+  }
+
+  .hero-line {
+    position: absolute;
+    top: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 1px;
+    height: 80px;
+    background: linear-gradient(to bottom, transparent, var(--gold));
+    z-index: 1;
+  }
+
+  .hero-content { position: relative; z-index: 2; max-width: 760px; }
+
+  .logo-mark {
+    display: inline-block;
+    font-family: 'Playfair Display', serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 48px;
+    padding: 8px 20px;
+    border: 1px solid rgba(201,147,58,0.4);
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(42px, 7vw, 88px);
+    font-weight: 900;
+    line-height: 1.0;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    margin-bottom: 28px;
+  }
+
+  h1 em {
+    font-style: italic;
+    color: var(--gold);
+  }
+
+  .hero-sub {
+    font-size: clamp(15px, 2vw, 18px);
+    line-height: 1.7;
+    color: var(--warm-grey);
+    max-width: 520px;
+    margin: 0 auto 52px;
+    font-weight: 300;
+  }
+
+  .cta-btn {
+    display: inline-block;
+    background: var(--ink);
+    color: var(--cream);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 18px 44px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+  }
+
+  .cta-btn:hover {
+    background: var(--gold);
+    color: var(--ink);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(201,147,58,0.3);
+  }
+
+  .hero-footnote {
+    margin-top: 32px;
+    font-size: 12px;
+    color: var(--warm-grey);
+    letter-spacing: 0.05em;
+  }
+
+  /* ── SECTION WRAPPER ── */
+  .section {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 80px 24px;
+  }
+
+  /* ── QUIZ SECTION ── */
+  #quiz-section {
+    display: none;
+    background: var(--paper);
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  .quiz-header {
+    background: var(--ink);
+    color: var(--cream);
+    padding: 28px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .quiz-header .brand { font-family: 'Playfair Display', serif; font-size: 18px; color: var(--gold-light); }
+
+  .progress-bar-wrap { flex: 1; margin: 0 40px; }
+  .progress-track { height: 2px; background: rgba(255,255,255,0.15); }
+  .progress-fill { height: 2px; background: var(--gold); transition: width 0.5s ease; width: 0%; }
+  .progress-label { font-size: 11px; color: var(--warm-grey); margin-top: 6px; letter-spacing: 0.1em; }
+
+  .quiz-body { padding: 64px 40px; max-width: 700px; margin: 0 auto; }
+
+  .question-chip {
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 20px;
+    font-weight: 500;
+  }
+
+  .question-text {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(24px, 4vw, 34px);
+    line-height: 1.25;
+    margin-bottom: 12px;
+    color: var(--ink);
+  }
+
+  .question-sub {
+    font-size: 14px;
+    color: var(--warm-grey);
+    margin-bottom: 40px;
+    line-height: 1.6;
+  }
+
+  /* Choices */
+  .choices { display: flex; flex-direction: column; gap: 14px; }
+
+  .choice {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 18px 22px;
+    border: 1.5px solid rgba(14,11,7,0.12);
+    background: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: left;
+  }
+
+  .choice:hover { border-color: var(--gold); background: rgba(201,147,58,0.04); }
+
+  .choice.selected {
+    border-color: var(--ink);
+    background: var(--ink);
+    color: var(--cream);
+  }
+
+  .choice-letter {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    font-weight: 700;
+    min-width: 24px;
+    color: var(--gold);
+    transition: color 0.2s;
+  }
+  .choice.selected .choice-letter { color: var(--gold-light); }
+
+  .choice-text { font-size: 15px; line-height: 1.5; }
+
+  /* Text input */
+  .text-input-wrap { margin-top: 8px; }
+  textarea, input[type="text"], input[type="email"] {
+    width: 100%;
+    padding: 16px 20px;
+    border: 1.5px solid rgba(14,11,7,0.15);
+    background: white;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 300;
+    color: var(--ink);
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  textarea:focus, input:focus { border-color: var(--gold); }
+  textarea { min-height: 120px; }
+
+  /* Nav buttons */
+  .quiz-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 48px; }
+
+  .btn-back {
+    background: none;
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    color: var(--warm-grey);
+    cursor: pointer;
+    text-transform: uppercase;
+    padding: 0;
+    transition: color 0.2s;
+  }
+  .btn-back:hover { color: var(--ink); }
+
+  .btn-next {
+    background: var(--ink);
+    color: var(--cream);
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 16px 38px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+  }
+  .btn-next:hover:not(:disabled) { background: var(--gold); color: var(--ink); }
+  .btn-next:disabled { opacity: 0.3; cursor: not-allowed; }
+
+  /* ── EMAIL GATE ── */
+  #email-gate {
+    display: none;
+    background: var(--ink);
+    min-height: 100vh;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 24px;
+    text-align: center;
+  }
+
+  .email-card {
+    max-width: 540px;
+    width: 100%;
+  }
+
+  .email-card h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 5vw, 46px);
+    color: var(--cream);
+    line-height: 1.2;
+    margin-bottom: 16px;
+  }
+
+  .email-card h2 em { font-style: italic; color: var(--gold-light); }
+
+  .email-card p {
+    color: var(--warm-grey);
+    font-size: 15px;
+    line-height: 1.7;
+    margin-bottom: 40px;
+  }
+
+  .email-form { display: flex; flex-direction: column; gap: 14px; }
+
+  .email-form input {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.15);
+    color: var(--cream);
+    font-size: 15px;
+    padding: 16px 20px;
+  }
+
+  .email-form input::placeholder { color: rgba(255,255,255,0.3); }
+  .email-form input:focus { border-color: var(--gold); background: rgba(201,147,58,0.06); }
+
+  .btn-submit {
+    background: var(--gold);
+    color: var(--ink);
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 18px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    margin-top: 8px;
+  }
+  .btn-submit:hover:not(:disabled) { background: var(--gold-light); transform: translateY(-2px); }
+  .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .privacy-note { font-size: 12px; color: rgba(255,255,255,0.25); margin-top: 16px; line-height: 1.5; }
+
+  /* ── RESULTS ── */
+  #results-section {
+    display: none;
+    background: var(--cream);
+    min-height: 100vh;
+  }
+
+  .results-hero {
+    background: var(--ink);
+    padding: 64px 40px;
+    text-align: center;
+  }
+
+  .positioning-badge {
+    display: inline-block;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    padding: 8px 20px;
+    margin-bottom: 32px;
+  }
+
+  .results-hero h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(32px, 6vw, 60px);
+    color: var(--cream);
+    line-height: 1.1;
+    margin-bottom: 16px;
+  }
+
+  .results-hero h2 span { color: var(--gold-light); font-style: italic; }
+
+  .results-body { max-width: 760px; margin: 0 auto; padding: 64px 32px; }
+
+  .result-block {
+    margin-bottom: 48px;
+    padding-bottom: 48px;
+    border-bottom: 1px solid rgba(14,11,7,0.1);
+  }
+  .result-block:last-child { border-bottom: none; }
+
+  .result-label {
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 14px;
+    font-weight: 500;
+  }
+
+  .result-block h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    margin-bottom: 14px;
+    color: var(--ink);
+  }
+
+  .result-block p { font-size: 16px; line-height: 1.8; color: #3a3530; font-weight: 300; }
+
+  .result-tags { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+
+  .tag {
+    padding: 8px 16px;
+    border: 1px solid rgba(14,11,7,0.2);
+    font-size: 13px;
+    color: var(--ink);
+    background: white;
+  }
+
+  /* Loading */
+  #loading-screen {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: var(--ink);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .loader-ring {
+    width: 64px; height: 64px;
+    border: 2px solid rgba(201,147,58,0.2);
+    border-top-color: var(--gold);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 32px;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .loader-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    color: var(--cream);
+    margin-bottom: 10px;
+  }
+
+  .loader-sub { font-size: 13px; color: var(--warm-grey); letter-spacing: 0.1em; }
+
+  /* Animations */
+  .fade-in { animation: fadeIn 0.5s ease forwards; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+
+  .question-wrap { animation: fadeIn 0.4s ease; }
+
+  /* Error */
+  .error-msg { color: #c0392b; font-size: 13px; margin-top: 8px; display: none; }
+
+  @media (max-width: 600px) {
+    .quiz-header { flex-direction: column; gap: 16px; padding: 20px; }
+    .progress-bar-wrap { margin: 0; width: 100%; }
+    .quiz-body { padding: 40px 20px; }
+    .quiz-nav { flex-direction: column; gap: 16px; }
+    .btn-next { width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════ HERO -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-line"></div>
+  <div class="hero-content fade-in">
+    <div class="logo-mark">Position IQ</div>
+    <h1>What does your<br>brand <em>truly</em> stand for?</h1>
+    <p class="hero-sub">Answer 8 questions. Receive a personalised brand positioning strategy — your archetype, voice, market angle, and differentiation roadmap.</p>
+    <button class="cta-btn" onclick="startQuiz()">Discover My Position</button>
+    <p class="hero-footnote">Free · 3 minutes · Results delivered to your inbox</p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════ QUIZ -->
+<section id="quiz-section">
+  <div class="quiz-header">
+    <div class="brand">Position IQ</div>
+    <div class="progress-bar-wrap">
+      <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+      <div class="progress-label" id="progress-label">Question 1 of 8</div>
+    </div>
+  </div>
+
+  <div class="quiz-body">
+    <div id="question-container"></div>
+    <div class="quiz-nav">
+      <button class="btn-back" id="btn-back" onclick="prevQuestion()" style="visibility:hidden">← Back</button>
+      <button class="btn-next" id="btn-next" onclick="nextQuestion()" disabled>Continue →</button>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════ EMAIL GATE -->
+<section id="email-gate">
+  <div class="email-card fade-in">
+    <div class="positioning-badge">Almost there</div>
+    <h2>Where shall we send your <em>brand blueprint</em>?</h2>
+    <p>Your personalised positioning report is ready. Enter your details below and we'll deliver it straight to your inbox — plus a 5-part email series to help you bring your positioning to life.</p>
+    <div class="email-form">
+      <input type="text" id="user-name" placeholder="Your first name" required>
+      <input type="text" id="brand-name" placeholder="Your brand name" required>
+      <input type="email" id="user-email" placeholder="Your email address" required>
+      <p class="error-msg" id="email-error">Please fill in all fields with a valid email.</p>
+      <button class="btn-submit" id="submit-btn" onclick="submitEmail()">Send My Brand Positioning →</button>
+    </div>
+    <p class="privacy-note">No spam. Ever. You can unsubscribe at any time.<br>Your data is used only to deliver your results and related brand strategy content.</p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════ LOADING -->
+<div id="loading-screen">
+  <div class="loader-ring"></div>
+  <p class="loader-text">Analysing your brand DNA…</p>
+  <p class="loader-sub">Crafting your personalised positioning strategy</p>
+</div>
+
+<!-- ══════════════════════════════════════════════ RESULTS -->
+<section id="results-section">
+  <div class="results-hero">
+    <div class="positioning-badge">Your Brand Positioning</div>
+    <h2 id="result-headline">Your Brand Archetype</h2>
+  </div>
+  <div class="results-body" id="results-body">
+    <!-- Injected by JS -->
+  </div>
+</section>
+
+<script>
+// ══════════════════════════════════ QUIZ DATA
+const questions = [
+  {
+    id: "industry",
+    chip: "01 — Industry",
+    text: "What industry or sector does your brand operate in?",
+    sub: "Be as specific as you like — niche answers produce sharper positioning.",
+    type: "text",
+    placeholder: "e.g. Sustainable skincare for women over 40, B2B SaaS for logistics teams…"
+  },
+  {
+    id: "audience",
+    chip: "02 — Audience",
+    text: "Who is your ideal customer?",
+    sub: "Describe the person you most want to serve.",
+    type: "text",
+    placeholder: "e.g. Female founders aged 30–45 who want to scale without burnout…"
+  },
+  {
+    id: "transformation",
+    chip: "03 — Transformation",
+    text: "What transformation does your brand deliver?",
+    sub: "Before → After. What changes for your customer after working with you?",
+    type: "text",
+    placeholder: "e.g. From overwhelmed and invisible online to confidently booked out…"
+  },
+  {
+    id: "differentiation",
+    chip: "04 — Differentiation",
+    text: "What makes you genuinely different from competitors?",
+    sub: "Honest and specific answers work best here.",
+    type: "text",
+    placeholder: "e.g. We're the only agency that combines neuroscience with copywriting…"
+  },
+  {
+    id: "values",
+    chip: "05 — Brand Values",
+    text: "Which values are non-negotiable for your brand?",
+    sub: "Select all that feel authentically true — not aspirational.",
+    type: "multi",
+    options: [
+      "Authenticity & Transparency",
+      "Innovation & Bold thinking",
+      "Luxury & Excellence",
+      "Community & Belonging",
+      "Sustainability & Responsibility",
+      "Performance & Results",
+      "Creativity & Self-expression",
+      "Trust & Reliability"
+    ]
+  },
+  {
+    id: "tone",
+    chip: "06 — Brand Voice",
+    text: "How does your brand communicate?",
+    sub: "Choose the tone that feels most natural — not most professional.",
+    type: "single",
+    options: [
+      { label: "Warm & Nurturing", desc: "Like a trusted friend who genuinely cares" },
+      { label: "Bold & Provocative", desc: "Direct, confident, challenges the status quo" },
+      { label: "Refined & Authoritative", desc: "Expert, measured, premium in every word" },
+      { label: "Playful & Energetic", desc: "Fun, irreverent, makes people smile" }
+    ]
+  },
+  {
+    id: "price",
+    chip: "07 — Market Position",
+    text: "Where do you sit (or want to sit) on price?",
+    sub: "This shapes your positioning angle significantly.",
+    type: "single",
+    options: [
+      { label: "Accessible / Budget-friendly", desc: "Value for money is part of the promise" },
+      { label: "Mid-market", desc: "Fair price, strong quality" },
+      { label: "Premium", desc: "Above average — quality justifies cost" },
+      { label: "Luxury / Ultra-premium", desc: "Price is a feature, exclusivity matters" }
+    ]
+  },
+  {
+    id: "ambition",
+    chip: "08 — Brand Ambition",
+    text: "What does success look like for your brand in 3 years?",
+    sub: "Dream big. This helps calibrate your positioning strategy.",
+    type: "text",
+    placeholder: "e.g. Recognised as the go-to expert for X in Y market, featured in…"
+  }
+];
+
+// ══════════════════════════════════ STATE
+let currentQ = 0;
+let answers = {};
+let selectedValues = [];
+let userName = "", brandName = "", userEmail = "";
+
+// ══════════════════════════════════ NAVIGATION
+function startQuiz() {
+  document.getElementById("hero").style.display = "none";
+  document.getElementById("quiz-section").style.display = "block";
+  window.scrollTo(0, 0);
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[currentQ];
+  const pct = ((currentQ) / questions.length) * 100;
+  document.getElementById("progress-fill").style.width = pct + "%";
+  document.getElementById("progress-label").textContent = `Question ${currentQ + 1} of ${questions.length}`;
+  document.getElementById("btn-back").style.visibility = currentQ === 0 ? "hidden" : "visible";
+  document.getElementById("btn-next").disabled = true;
+
+  let html = `<div class="question-wrap">
+    <div class="question-chip">${q.chip}</div>
+    <div class="question-text">${q.text}</div>
+    <div class="question-sub">${q.sub}</div>`;
+
+  if (q.type === "text") {
+    const saved = answers[q.id] || "";
+    html += `<div class="text-input-wrap">
+      <textarea id="q-input" placeholder="${q.placeholder}" oninput="onTextInput(this)">${saved}</textarea>
+    </div>`;
+    if (saved.trim()) {
+      setTimeout(() => { document.getElementById("btn-next").disabled = false; }, 50);
+    }
+  } else if (q.type === "single") {
+    const letters = ["A","B","C","D","E","F"];
+    html += `<div class="choices">`;
+    q.options.forEach((opt, i) => {
+      const sel = answers[q.id] === opt.label ? " selected" : "";
+      html += `<div class="choice${sel}" onclick="selectSingle(this, '${q.id}', '${opt.label}')">
+        <span class="choice-letter">${letters[i]}</span>
+        <div>
+          <div class="choice-text" style="font-weight:500">${opt.label}</div>
+          <div class="choice-text" style="font-size:13px;opacity:0.7;margin-top:4px">${opt.desc}</div>
+        </div>
+      </div>`;
+    });
+    html += `</div>`;
+    if (answers[q.id]) setTimeout(() => { document.getElementById("btn-next").disabled = false; }, 50);
+  } else if (q.type === "multi") {
+    selectedValues = answers[q.id] ? [...answers[q.id]] : [];
+    html += `<div class="choices">`;
+    q.options.forEach((opt, i) => {
+      const sel = selectedValues.includes(opt) ? " selected" : "";
+      html += `<div class="choice${sel}" onclick="toggleMulti(this, '${opt}')">
+        <span class="choice-letter">${selectedValues.includes(opt) ? "✓" : "○"}</span>
+        <div class="choice-text">${opt}</div>
+      </div>`;
+    });
+    html += `</div><p style="font-size:12px;color:var(--warm-grey);margin-top:14px">Select all that apply</p>`;
+    if (selectedValues.length > 0) setTimeout(() => { document.getElementById("btn-next").disabled = false; }, 50);
+  }
+
+  html += `</div>`;
+  document.getElementById("question-container").innerHTML = html;
+}
+
+function onTextInput(el) {
+  document.getElementById("btn-next").disabled = el.value.trim().length < 3;
+}
+
+function selectSingle(el, qId, value) {
+  document.querySelectorAll(".choice").forEach(c => c.classList.remove("selected"));
+  el.classList.add("selected");
+  answers[qId] = value;
+  document.getElementById("btn-next").disabled = false;
+}
+
+function toggleMulti(el, value) {
+  const q = questions[currentQ];
+  const idx = selectedValues.indexOf(value);
+  if (idx > -1) {
+    selectedValues.splice(idx, 1);
+    el.classList.remove("selected");
+    el.querySelector(".choice-letter").textContent = "○";
+  } else {
+    selectedValues.push(value);
+    el.classList.add("selected");
+    el.querySelector(".choice-letter").textContent = "✓";
+  }
+  answers[q.id] = [...selectedValues];
+  document.getElementById("btn-next").disabled = selectedValues.length === 0;
+}
+
+function nextQuestion() {
+  const q = questions[currentQ];
+  if (q.type === "text") {
+    const val = document.getElementById("q-input").value.trim();
+    if (val.length < 3) return;
+    answers[q.id] = val;
+  }
+  currentQ++;
+  if (currentQ >= questions.length) {
+    showEmailGate();
+  } else {
+    renderQuestion();
+    window.scrollTo(0, 0);
+  }
+}
+
+function prevQuestion() {
+  if (currentQ > 0) { currentQ--; renderQuestion(); window.scrollTo(0, 0); }
+}
+
+// ══════════════════════════════════ EMAIL GATE
+function showEmailGate() {
+  document.getElementById("quiz-section").style.display = "none";
+  document.getElementById("email-gate").style.display = "flex";
+  window.scrollTo(0, 0);
+}
+
+async function submitEmail() {
+  userName = document.getElementById("user-name").value.trim();
+  brandName = document.getElementById("brand-name").value.trim();
+  userEmail = document.getElementById("user-email").value.trim();
+  const errEl = document.getElementById("email-error");
+  const emailReg = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  if (!userName || !brandName || !emailReg.test(userEmail)) {
+    errEl.style.display = "block";
+    return;
+  }
+
+  errEl.style.display = "none";
+  document.getElementById("submit-btn").disabled = true;
+  document.getElementById("submit-btn").textContent = "Generating your positioning…";
+
+  document.getElementById("email-gate").style.display = "none";
+  document.getElementById("loading-screen").style.display = "flex";
+
+  await generateResults();
+}
+
+// ══════════════════════════════════ AI RESULTS
+async function generateResults() {
+  const prompt = buildPrompt();
+
+  try {
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 1000,
+        messages: [{
+          role: "user",
+          content: prompt
+        }]
+      })
+    });
+
+    const data = await response.json();
+    const text = data.content?.[0]?.text || "";
+
+    let parsed;
+    try {
+      const clean = text.replace(/```json|```/g, "").trim();
+      parsed = JSON.parse(clean);
+    } catch {
+      parsed = buildFallback();
+    }
+
+    displayResults(parsed);
+
+    // ── Send to webhook (replace URL with your Make/Zapier endpoint)
+    sendToWebhook({ userName, brandName, userEmail, answers, positioning: parsed });
+
+  } catch (err) {
+    console.error(err);
+    displayResults(buildFallback());
+  }
+}
+
+function buildPrompt() {
+  return `You are a world-class brand strategist. Based on the following brand quiz answers, generate a precise brand positioning strategy. Respond ONLY with a JSON object — no preamble, no markdown backticks.
+
+Brand Quiz Answers:
+- Industry/Sector: ${answers.industry || "Not specified"}
+- Ideal Customer: ${answers.audience || "Not specified"}
+- Transformation Delivered: ${answers.transformation || "Not specified"}
+- Differentiation: ${answers.differentiation || "Not specified"}
+- Core Values: ${Array.isArray(answers.values) ? answers.values.join(", ") : answers.values || "Not specified"}
+- Brand Voice: ${answers.tone || "Not specified"}
+- Price Position: ${answers.price || "Not specified"}
+- 3-Year Ambition: ${answers.ambition || "Not specified"}
+- Brand Name: ${brandName}
+- Founder Name: ${userName}
+
+Return this exact JSON structure:
+{
+  "archetype": "Name of their brand archetype (e.g. The Sage, The Rebel, The Creator)",
+  "archetypeDescription": "2-sentence description of what this archetype means for their specific brand",
+  "positioningStatement": "A crisp 2-sentence brand positioning statement they can use immediately",
+  "coreMessage": "Their single most powerful brand message — one sentence",
+  "voiceKeywords": ["word1", "word2", "word3", "word4", "word5"],
+  "differentiationAngle": "A paragraph explaining their strongest angle of differentiation",
+  "targetAudienceInsight": "A paragraph revealing a deep insight about their ideal customer's real motivations",
+  "nextSteps": ["Specific action 1", "Specific action 2", "Specific action 3", "Specific action 4"]
+}`;
+}
+
+function buildFallback() {
+  return {
+    archetype: "The Sage",
+    archetypeDescription: `${brandName} operates as a brand that leads with wisdom and expertise. You build trust through deep knowledge and genuine transformation.`,
+    positioningStatement: `${brandName} exists for ${answers.audience || "discerning customers"} who are tired of surface-level solutions. We deliver ${answers.transformation || "real, lasting change"} through an approach that is wholly our own.`,
+    coreMessage: `${brandName}: Where expertise meets transformation.`,
+    voiceKeywords: ["Authoritative", "Warm", "Direct", "Expert", "Trustworthy"],
+    differentiationAngle: answers.differentiation || "Your unique approach sets you apart in a crowded market.",
+    targetAudienceInsight: `Your ideal customer — ${answers.audience || "your target audience"} — is not just looking for a product or service. They are looking for a guide they can trust, a brand that truly understands their world.`,
+    nextSteps: [
+      "Craft a brand story that centres your customer's transformation",
+      "Audit your current messaging against your core positioning statement",
+      "Identify 3 content pillars that reflect your brand values",
+      "Define your brand's visual identity to match your archetype"
+    ]
+  };
+}
+
+function displayResults(data) {
+  document.getElementById("loading-screen").style.display = "none";
+  document.getElementById("results-section").style.display = "block";
+  window.scrollTo(0, 0);
+
+  document.getElementById("result-headline").innerHTML =
+    `${brandName} is <span>${data.archetype}</span>`;
+
+  const tags = data.voiceKeywords?.map(w => `<div class="tag">${w}</div>`).join("") || "";
+  const steps = data.nextSteps?.map(s => `<li style="margin-bottom:10px;line-height:1.6">${s}</li>`).join("") || "";
+
+  document.getElementById("results-body").innerHTML = `
+    <div class="result-block fade-in">
+      <div class="result-label">Your Archetype</div>
+      <h3>${data.archetype}</h3>
+      <p>${data.archetypeDescription}</p>
+    </div>
+
+    <div class="result-block fade-in">
+      <div class="result-label">Brand Positioning Statement</div>
+      <h3>Your Position in the Market</h3>
+      <p style="font-size:18px;font-style:italic;font-family:'Playfair Display',serif;line-height:1.6">${data.positioningStatement}</p>
+    </div>
+
+    <div class="result-block fade-in">
+      <div class="result-label">Core Message</div>
+      <h3>The One Thing You Stand For</h3>
+      <p>${data.coreMessage}</p>
+    </div>
+
+    <div class="result-block fade-in">
+      <div class="result-label">Brand Voice</div>
+      <h3>How You Should Communicate</h3>
+      <div class="result-tags">${tags}</div>
+    </div>
+
+    <div class="result-block fade-in">
+      <div class="result-label">Differentiation</div>
+      <h3>Your Competitive Edge</h3>
+      <p>${data.differentiationAngle}</p>
+    </div>
+
+    <div class="result-block fade-in">
+      <div class="result-label">Audience Insight</div>
+      <h3>What Your Customers Really Want</h3>
+      <p>${data.targetAudienceInsight}</p>
+    </div>
+
+    <div class="result-block fade-in" style="background:var(--ink);padding:40px;margin:0 -32px;">
+      <div class="result-label" style="color:var(--gold-light)">Your Next Steps</div>
+      <h3 style="color:var(--cream);margin-bottom:24px">Bringing Your Position to Life</h3>
+      <ol style="padding-left:20px;color:#c5bfb7">${steps}</ol>
+      <p style="margin-top:28px;font-size:13px;color:var(--warm-grey)">
+        📩 A full copy of this report has been sent to <strong style="color:var(--gold-light)">${userEmail}</strong> — check your inbox. 
+        Over the next 5 days, you'll receive actionable brand strategy guidance to help you implement this positioning.
+      </p>
+    </div>
+  `;
+}
+
+// ══════════════════════════════════ WEBHOOK
+async function sendToWebhook(payload) {
+  const webhookUrl = "YOUR_MAKE_OR_ZAPIER_WEBHOOK_URL_HERE";
+  if (webhookUrl.includes("YOUR_")) return; // placeholder guard
+
+  try {
+    await fetch(webhookUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+  } catch (e) {
+    console.warn("Webhook send failed:", e);
+  }
+}
+</script>
+</body>
+</html>
