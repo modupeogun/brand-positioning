@@ -13,8 +13,8 @@ No coding knowledge needed — just follow each step.
 | Multi-page website (Home, About, Case Studies, Quiz) | Built |
 | 10-question brand positioning quiz | Built |
 | Email capture gate (name, brand, email) | Built |
-| AI-generated personalized results (Playbook, Case Study, Content Strategy) | Built |
-| Results display with 3 tabs | Built |
+| AI-generated personalized results (Playbook, Case Study, Content Strategy, 5-Day Email Series) | Built |
+| Results display with 4 tabs | Built |
 | Serverless API proxy (keeps your API key safe) | Built |
 | Webhook integration for automation | Built |
 | Email provider integration (Kit / Mailchimp) | Built |
