@@ -1,0 +1,12 @@
+[build]
+  publish = "."
+  functions = "netlify/functions"
+
+[functions]
+  node_bundler = "esbuild"
+
+# Redirect the API call to the serverless function
+[[redirects]]
+  from = "/api/generate"
+  to = "/.netlify/functions/generate"
+  status = 200

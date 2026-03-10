@@ -280,7 +280,7 @@ textarea::placeholder,input::placeholder{color:var(--text-faint);}
 .email-fields input::placeholder{color:rgba(255,255,255,0.25);}
 .email-fields input:focus{border-color:var(--red);background:rgba(237,13,13,0.05);}
 .submit-btn{background:var(--red);color:var(--white);border:none;font-family:'Urbanist',sans-serif;font-size:12px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;padding:16px;cursor:pointer;transition:background 0.2s;margin-top:4px;width:100%;}
-.submit-btn:hover:not(:disabled){background:var(--red);}
+.submit-btn:hover:not(:disabled){background:var(--ink);}
 .submit-btn:disabled{opacity:0.35;cursor:not-allowed;}
 .privacy-note{font-size:11px;color:rgba(255,255,255,0.22);margin-top:16px;line-height:1.6;}
 .err{color:#ff6b6b;font-size:12px;margin-top:4px;display:none;font-weight:600;}
@@ -824,13 +824,16 @@ async function submitEmail(){
 
 async function generateAll(){
   try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:buildPrompt()}]})});
+    // Route through Netlify serverless function (keeps API key safe)
+    const res=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:buildPrompt()})});
+    if(!res.ok) throw new Error('API returned '+res.status);
     const data=await res.json();
     const raw=data.content?.[0]?.text||'';
     let parsed;try{parsed=JSON.parse(raw.replace(/```json|```/g,'').trim());}catch{parsed=getFallback();}
     displayResults(parsed);
     sendWebhook({uName,bName,uEmail,answers,output:parsed});
-  }catch(e){console.error(e);displayResults(getFallback());}
+    sendToEmailProvider({uName,bName,uEmail,answers,output:parsed});
+  }catch(e){console.error(e);displayResults(getFallback());sendWebhook({uName,bName,uEmail,answers,output:getFallback()});sendToEmailProvider({uName,bName,uEmail,answers,output:getFallback()});}
 }
 
 function buildPrompt(){
@@ -909,7 +912,73 @@ function switchTab(name,btn){
 async function sendWebhook(payload){
   const url='YOUR_MAKE_OR_ZAPIER_WEBHOOK_URL_HERE';
   if(url.includes('YOUR_'))return;
-  try{await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});}catch(e){console.warn('Webhook failed',e);}
+  // Flatten the payload so Make.com / Zapier can map fields easily
+  const flat={
+    first_name:payload.uName,
+    brand_name:payload.bName,
+    email:payload.uEmail,
+    brand_industry:payload.answers?.brand_industry||'',
+    customer_truth:payload.answers?.customer_truth||'',
+    transformation:payload.answers?.transformation||'',
+    origin:payload.answers?.origin||'',
+    difference:payload.answers?.difference||'',
+    content_feeling:payload.answers?.content_feeling||'',
+    brand_values:(payload.answers?.brand_values||[]).join(', '),
+    brand_tone:payload.answers?.brand_tone||'',
+    content_comfort:payload.answers?.content_comfort||'',
+    ambition:payload.answers?.ambition||'',
+    archetype:payload.output?.playbook?.archetype_name||'',
+    positioning_statement:payload.output?.playbook?.positioning_statement||'',
+    core_message:payload.output?.playbook?.core_message||'',
+    storytelling_model:payload.output?.storytelling_model||'',
+    headline:payload.output?.headline||'',
+    full_results_json:JSON.stringify(payload.output)
+  };
+  try{await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(flat)});}catch(e){console.warn('Webhook failed',e);}
+}
+
+// ── EMAIL PROVIDER INTEGRATION ──
+// Supports: Kit (ConvertKit), Mailchimp, or any provider with a form/API endpoint
+async function sendToEmailProvider(payload){
+  // ── OPTION A: Kit (ConvertKit) — recommended ──
+  // Replace with your Kit form ID. Find it at: app.kit.com → Forms → select form → Settings
+  const KIT_FORM_ID='YOUR_KIT_FORM_ID_HERE';
+  if(!KIT_FORM_ID.includes('YOUR_')){
+    try{
+      await fetch(`https://api.convertkit.com/v3/forms/${KIT_FORM_ID}/subscribe`,{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({
+          api_key:'YOUR_KIT_PUBLIC_API_KEY_HERE',
+          email:payload.uEmail,
+          first_name:payload.uName,
+          fields:{
+            brand_name:payload.bName,
+            archetype:payload.output?.playbook?.archetype_name||'',
+            positioning:payload.output?.playbook?.positioning_statement||'',
+            core_message:payload.output?.playbook?.core_message||'',
+            storytelling_model:payload.output?.storytelling_model||''
+          },
+          tags:['positioning-iq-completed']
+        })
+      });
+    }catch(e){console.warn('Kit subscribe failed',e);}
+    return;
+  }
+
+  // ── OPTION B: Mailchimp (via their embedded form action URL) ──
+  const MAILCHIMP_URL='YOUR_MAILCHIMP_FORM_ACTION_URL_HERE';
+  if(!MAILCHIMP_URL.includes('YOUR_')){
+    try{
+      const formData=new URLSearchParams();
+      formData.append('EMAIL',payload.uEmail);
+      formData.append('FNAME',payload.uName);
+      formData.append('BRAND',payload.bName);
+      formData.append('ARCHETYPE',payload.output?.playbook?.archetype_name||'');
+      await fetch(MAILCHIMP_URL,{method:'POST',mode:'no-cors',body:formData});
+    }catch(e){console.warn('Mailchimp subscribe failed',e);}
+    return;
+  }
 }
 
 function getFallback(){
