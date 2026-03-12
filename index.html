@@ -289,7 +289,7 @@ textarea::placeholder,input::placeholder{color:var(--text-faint);}
 .email-fields input::placeholder{color:rgba(255,255,255,0.25);}
 .email-fields input:focus{border-color:var(--red);background:rgba(237,13,13,0.05);}
 .submit-btn{background:var(--red);color:var(--white);border:none;font-family:'Urbanist',sans-serif;font-size:12px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;padding:16px;cursor:pointer;transition:background 0.2s;margin-top:4px;width:100%;}
-.submit-btn:hover:not(:disabled){background:var(--red);}
+.submit-btn:hover:not(:disabled){background:var(--ink);}
 .submit-btn:disabled{opacity:0.35;cursor:not-allowed;}
 .privacy-note{font-size:11px;color:rgba(255,255,255,0.22);margin-top:16px;line-height:1.6;}
 .err{color:#ff6b6b;font-size:12px;margin-top:4px;display:none;font-weight:600;}
@@ -335,6 +335,12 @@ textarea::placeholder,input::placeholder{color:var(--text-faint);}
 .content-card .platform{font-size:10px;letter-spacing:0.25em;text-transform:uppercase;color:var(--red);font-weight:700;margin-bottom:10px;}
 .content-card .post-text{font-size:15px;line-height:1.78;color:var(--text-body);font-style:italic;white-space:pre-line;}
 .content-card .rationale{margin-top:12px;font-size:13px;color:var(--text-muted);line-height:1.6;border-top:1px solid var(--border);padding-top:12px;}
+.email-card-result{background:var(--white);padding:28px;margin-bottom:20px;border-left:3px solid var(--orange);}
+.email-card-result .email-day{font-size:10px;letter-spacing:0.25em;text-transform:uppercase;color:var(--orange);font-weight:700;margin-bottom:4px;}
+.email-card-result .email-subject{font-size:17px;font-weight:700;color:var(--ink);margin-bottom:4px;}
+.email-card-result .email-preview{font-size:13px;color:var(--text-faint);font-style:italic;margin-bottom:8px;}
+.email-card-result .email-purpose{font-size:13px;color:var(--text-muted);margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+.email-card-result .email-body{font-size:15px;line-height:1.78;color:var(--text-body);white-space:pre-line;}
 .dark-callout{background:var(--ink);padding:40px;margin:0 -32px;}
 .dark-callout .r-label{color:rgba(237,13,13,0.7);}
 .dark-callout h3{color:var(--white);}
@@ -670,9 +676,12 @@ textarea::placeholder,input::placeholder{color:var(--text-faint);}
     <h2 class="eg-title">Where should we send your<br><em>brand story</em>?</h2>
     <p class="eg-sub">Your full playbook, growth case study, and content strategy are ready. Drop your details and we'll deliver everything straight to you.</p>
     <div class="email-fields">
-      <input type="text" id="u-name" placeholder="Your first name (e.g. Tobi)">
-      <input type="text" id="b-name" placeholder="Your brand name (e.g. Cafftender)">
-      <input type="email" id="u-email" placeholder="Your email address">
+      <label for="u-name" style="font-size:12px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:var(--text-muted);margin-bottom:-6px;">Your first name</label>
+      <input type="text" id="u-name" placeholder="e.g. Modupe">
+      <label for="b-name" style="font-size:12px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:var(--red);margin-bottom:-6px;">Your brand name (not your surname)</label>
+      <input type="text" id="b-name" placeholder="e.g. Cafftender, Oríkì, Nike">
+      <label for="u-email" style="font-size:12px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:var(--text-muted);margin-bottom:-6px;">Your email address</label>
+      <input type="email" id="u-email" placeholder="you@yourbrand.com">
       <p class="err" id="eerr">Please fill in all fields with a valid email.</p>
       <button class="submit-btn" id="sbtn" onclick="submitEmail()">Send Me My Positioning IQ →</button>
     </div>
@@ -689,7 +698,8 @@ textarea::placeholder,input::placeholder{color:var(--text-faint);}
     <p class="loader-step" id="ls1">→ Assigning your storytelling model</p>
     <p class="loader-step" id="ls2">→ Writing your brand playbook</p>
     <p class="loader-step" id="ls3">→ Building your growth case study</p>
-    <p class="loader-step" id="ls4">→ Crafting your content pieces</p>
+    <p class="loader-step" id="ls4">→ Crafting your 5 content pieces</p>
+    <p class="loader-step" id="ls5">→ Writing your 5-day email series</p>
   </div>
 </div>
 
@@ -714,10 +724,12 @@ textarea::placeholder,input::placeholder{color:var(--text-faint);}
     <button class="tab-btn active" onclick="switchTab('playbook',this)">The Playbook</button>
     <button class="tab-btn" onclick="switchTab('casestudy',this)">Your Case Study</button>
     <button class="tab-btn" onclick="switchTab('content',this)">Content Strategy</button>
+    <button class="tab-btn" onclick="switchTab('emails',this)">5-Day Email Series</button>
   </div>
   <div id="tab-playbook" class="tab-panel active"><div class="result-wrap" id="playbook-body"></div></div>
   <div id="tab-casestudy" class="tab-panel"><div class="result-wrap" id="casestudy-body"></div></div>
   <div id="tab-content" class="tab-panel"><div class="result-wrap" id="content-body"></div></div>
+  <div id="tab-emails" class="tab-panel"><div class="result-wrap" id="emails-body"></div></div>
 </div>
 
 <script>
@@ -878,55 +890,158 @@ async function submitEmail(){
   document.getElementById('sbtn').disabled=true;
   document.getElementById('email-gate').style.display='none';
   document.getElementById('loading').style.display='flex';
-  ['ls1','ls2','ls3','ls4'].forEach((id,i)=>setTimeout(()=>document.getElementById(id).classList.add('active'),i*2000));
+  ['ls1','ls2','ls3','ls4','ls5'].forEach((id,i)=>setTimeout(()=>document.getElementById(id).classList.add('active'),i*2500));
   await generateAll();
 }
 
 async function generateAll(){
   try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:4000,messages:[{role:'user',content:buildPrompt()}]})});
+    // Route through Netlify serverless function (keeps API key safe)
+    const res=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:buildPrompt()})});
+    if(!res.ok) throw new Error('API returned '+res.status);
     const data=await res.json();
     const raw=data.content?.[0]?.text||'';
     let parsed;try{parsed=JSON.parse(raw.replace(/```json|```/g,'').trim());}catch{parsed=getFallback();}
     displayResults(parsed);
     sendWebhook({uName,bName,uEmail,answers,output:parsed});
-  }catch(e){console.error(e);displayResults(getFallback());}
+    sendToEmailProvider({uName,bName,uEmail,answers,output:parsed});
+  }catch(e){console.error(e);displayResults(getFallback());sendWebhook({uName,bName,uEmail,answers,output:getFallback()});sendToEmailProvider({uName,bName,uEmail,answers,output:getFallback()});}
 }
 
 function buildPrompt(){
   const a=answers;
-  return `You are a world-class brand strategist and editorial writer. Your voice is warm, intelligent, and conversational — like a brilliant friend who knows everything about brand strategy.
+  // Extract brand name from quiz Q1 as backup (the answer often starts with the brand name)
+  const quizBrand=a.brand_industry||'';
+  return `You are a world-class brand strategist, editorial writer, and creative director. You write with the authority of someone who has studied thousands of brands — but the warmth of a brilliant friend who genuinely wants this brand to win.
 
-CRITICAL RULES — follow before writing a single word:
-1. The brand name is "${bName}". Use it constantly. NEVER use the founder name "${uName}" as the brand name.
-2. Every sentence must be SPECIFIC to "${bName}". If it could apply to any brand, rewrite it.
-3. Content posts must reference the actual product (${a.brand_industry||'their product'}), actual audience (${a.customer_truth||'their customer'}), and the actual feeling the brand creates.
-4. Use SENSORY, SPECIFIC language. Not "a premium product" — instead, describe the real experience of using it.
-5. Write the content posts IN the brand's voice as if you ARE the brand posting right now.
+CRITICAL RULES:
+- The brand is called "${bName}". Use "${bName}" by name throughout. NEVER use the founder's name "${uName}" as the brand name.
+- Every single piece of output must be SPECIFIC to ${bName} based on the answers below. If you could swap in another brand's name and the advice would still work, it's too generic. Rewrite it.
+- Reference their actual products, their actual customers, their actual origin story, their actual values. Use the details they gave you.
+- Write with personality. Be vivid. Be opinionated. Give them language they'd screenshot and send to their team.
+- Never use filler phrases like "In today's competitive landscape" or "In the modern marketplace." Start with something specific.
 
-BRAND QUIZ ANSWERS — use every detail to make the output hyper-specific:
-Brand & what it does: ${a.brand_industry||'not provided'}
-Ideal customer: ${a.customer_truth||'not provided'}
-Transformation delivered: ${a.transformation||'not provided'}
-Origin story: ${a.origin||'not provided'}
-Unique edge: ${a.difference||'not provided'}
-Desired first feeling: ${a.content_feeling||'not provided'}
-Brand values selected: ${Array.isArray(a.brand_values)?a.brand_values.join('; '):'not provided'}
-Communication style: ${a.brand_tone||'not provided'}
-Content vulnerability score: ${a.content_comfort||'not provided'}/10
-5-year ambition: ${a.ambition||'not provided'}
-Brand name: ${bName}
-Founder name (NOT the brand — do not use this as the brand name): ${uName}
+BRAND QUIZ ANSWERS FOR ${bName}:
+1. Brand & what it does: ${quizBrand}
+2. Their ideal customer (in their own words): ${a.customer_truth||'not provided'}
+3. The transformation they deliver: ${a.transformation||'not provided'}
+4. Why this brand exists (origin story): ${a.origin||'not provided'}
+5. Their unique edge / what they refuse to compromise: ${a.difference||'not provided'}
+6. The feeling they want people to have first: ${a.content_feeling||'not provided'}
+7. Brand values they say are genuinely true: ${Array.isArray(a.brand_values)?a.brand_values.join('; '):'not provided'}
+8. Their natural communication style: ${a.brand_tone||'not provided'}
+9. Content vulnerability comfort level: ${a.content_comfort||'not provided'}/10 (1=very curated, 10=raw and unfiltered)
+10. 5-year ambition: ${a.ambition||'not provided'}
+Founder's first name: ${uName}
 
-Assign one storytelling model (embody it invisibly — never name it to the user):
-SOLITUDE — still, poetic, inward. Power from depth.
-RITUAL — human moments, memory, comfort, return.
-SERIAL — universe-building, characters, mythology, lore.
-CONVICTION — values-first, belief-led. The why is the whole point.
-COMMUNITY — belonging, shared identity, collective movement.
+STEP 1 — Assign a storytelling model (use it to shape everything, but never name it to the user):
+SOLITUDE — still, poetic, inward. Power from depth and introspection.
+RITUAL — human moments, memory, comfort, return, the sacred ordinary.
+SERIAL — universe-building, characters, mythology, lore, an unfolding story.
+CONVICTION — values-first, belief-led. The why IS the brand.
+COMMUNITY — belonging, shared identity, collective movement, tribe.
 
-Return ONLY valid JSON with no preamble or backticks:
-{"storytelling_model":"one of the five","headline":"Evocative results headline max 8 words","subline":"One sentence capturing their brand story essence","playbook":{"archetype_name":"Specific archetype never 'The Hero'","archetype_description":"2-3 conversational sentences specific to this brand","positioning_statement":"2 sentences they'd actually say","core_message":"One line. The thing their brand keeps coming back to.","voice_principles":["3-5 active instructions"],"differentiation":"A paragraph on their real competitive edge","audience_insight":"A paragraph on the real psychological truth of their customer","what_to_stop":"One specific thing to stop doing","what_to_start":"One specific thing to start doing"},"case_study":{"title":"Compelling case study headline for this brand","section_headers":["Header 1","Header 2","Header 3"],"cultural_hook":"2-3 paragraphs opening with a big cultural idea. Separate with newlines.","brand_analysis":"3-4 paragraphs analysing their brand storytelling. Separate with newlines.","growth_implication":"1-2 paragraphs on why this approach compounds. Separate with newlines."},"content_strategy":{"pillars":["3 content pillars as memorable phrases"],"posts":[{"platform":"Instagram Caption","post":"Ready to use post in brand voice","why_it_works":"1-2 sentences"},{"platform":"LinkedIn Post","post":"Longer post with a point of view","why_it_works":"1-2 sentences"},{"platform":"Short-form Video Hook","post":"Opening 2-3 lines of a Reel or TikTok","why_it_works":"1-2 sentences"},{"platform":"Email Subject Line","post":"3 options labelled Option 1, 2, 3","why_it_works":"1-2 sentences"},{"platform":"Unexpected Touchpoint","post":"Packaging insert or order confirmation copy","why_it_works":"1-2 sentences"}]}}`;
+STEP 2 — Generate all 4 deliverables. Be EXTENSIVE. Write like you're being paid $50,000 for this brand strategy. Every section should feel crafted, not templated.
+
+Return ONLY valid JSON (no backticks, no preamble, no markdown wrapping):
+
+{
+  "storytelling_model": "one of the five models above",
+  "headline": "An evocative, specific headline about ${bName} — max 10 words. Must reference something unique about THEIR brand.",
+  "subline": "One vivid sentence capturing ${bName}'s brand story essence. Not generic. Must reference their actual positioning.",
+
+  "playbook": {
+    "archetype_name": "A specific, evocative archetype name. NOT generic names like 'The Hero' or 'The Visionary'. Make it feel like it was invented for ${bName}. e.g. 'The Quiet Radical', 'The Ritual Keeper', 'The Reluctant Expert'",
+    "archetype_description": "3-4 sentences explaining why this archetype fits ${bName} specifically. Reference their origin, their product, their values. Make it feel like a mirror.",
+    "positioning_statement": "2-3 sentences they'd actually say out loud to a customer. Written in ${bName}'s voice based on their communication style. Not corporate. Real.",
+    "core_message": "One powerful line. The thing ${bName} keeps coming back to. This should feel like a manifesto line they'd put on their wall.",
+    "voice_principles": ["5 specific, active voice instructions that are unique to ${bName}'s tone. Not 'be authentic' — more like 'Write like you're teaching someone to slow down without telling them to slow down' or 'Every sentence should feel handmade, never mass-produced'. Each principle should be 10-20 words."],
+    "differentiation": "2-3 paragraphs on ${bName}'s real competitive edge. Reference their specific answers about what makes them different. Explain WHY this matters in their market. Be strategic and specific.",
+    "audience_insight": "2-3 paragraphs on the deep psychological truth of ${bName}'s customer. Go beyond demographics. What are they really searching for? What frustration brought them here? What do they want to believe about themselves? Reference the customer description they provided.",
+    "what_to_stop": "One specific, concrete thing ${bName} should stop doing — with a brief explanation of why it's hurting them. Not vague. Something they can act on this week.",
+    "what_to_start": "One specific, concrete thing ${bName} should start doing — with a brief explanation of the impact. Something they can do in the next 7 days."
+  },
+
+  "case_study": {
+    "title": "A compelling editorial headline about ${bName}. Written like it belongs in a strategy publication. Use the brand name.",
+    "section_headers": ["A cultural/industry observation header", "A header about ${bName}'s specific approach", "A header about why this compounds over time"],
+    "cultural_hook": "3-4 paragraphs opening with a big cultural or industry observation, then narrowing to why ${bName}'s approach is significant. Write editorially — like a magazine feature. Include a blockquote that captures a key insight about the brand. Each paragraph should be 3-5 sentences. Separate paragraphs with \\n\\n.",
+    "brand_analysis": "4-5 paragraphs doing a deep analytical dive into ${bName}'s brand storytelling, positioning, and strategy. Reference their specific products, their origin story, their values, their customer. Explain what they're doing right and why it works at a structural level. Include a blockquote. Separate paragraphs with \\n\\n.",
+    "growth_implication": "2-3 paragraphs on why ${bName}'s approach compounds over time and what the growth trajectory looks like. Be specific about the mechanisms — word of mouth, loyalty, pricing power, cultural relevance. End with a 'positioning lesson' that's specific to ${bName}. Separate paragraphs with \\n\\n."
+  },
+
+  "content_strategy": {
+    "pillars": ["3 content pillars as memorable, specific phrases that only make sense for ${bName}'s brand. Not 'behind the scenes' — more like 'The 6AM kitchen sessions nobody asked to see' or 'Letters to the person who almost didn't try us'."],
+    "posts": [
+      {
+        "platform": "Instagram Caption",
+        "post": "A complete, ready-to-post Instagram caption (150-250 words) written IN ${bName}'s exact voice. Not about the brand — as the brand. Include line breaks for readability. Reference their actual products or processes. End with something that invites engagement without begging for it.",
+        "why_it_works": "2-3 sentences explaining the strategic choice behind this specific post."
+      },
+      {
+        "platform": "LinkedIn Post",
+        "post": "A complete LinkedIn post (200-350 words) with a strong opening hook, a point of view about ${bName}'s industry, and a personal insight from the founder's perspective. Written in ${bName}'s voice. Should feel like a thought leader post, not a product ad.",
+        "why_it_works": "2-3 sentences on why this works for LinkedIn specifically."
+      },
+      {
+        "platform": "Short-form Video Hook",
+        "post": "The opening 3-5 lines of a Reel or TikTok script. Must stop the scroll. Written for ${bName}'s specific product/service. Include a visual direction note in [brackets]. Then 2-3 more lines continuing the script.",
+        "why_it_works": "2-3 sentences on why this hook pattern works."
+      },
+      {
+        "platform": "Email Subject Lines",
+        "post": "5 email subject lines for ${bName}. Each with a different angle: curiosity, vulnerability, boldness, specificity, and warmth. Label them: Curiosity / Vulnerability / Boldness / Specificity / Warmth. Each should feel like it could only come from ${bName}.",
+        "why_it_works": "2-3 sentences on the psychology behind these subject line choices."
+      },
+      {
+        "platform": "Unexpected Touchpoint",
+        "post": "A piece of copy for an unexpected brand touchpoint — packaging insert, order confirmation email, 404 page, hold music message, or receipt footer. Pick whichever is most relevant to ${bName}'s business. Write the full copy, not just a description.",
+        "why_it_works": "2-3 sentences on why this touchpoint matters for ${bName}'s specific business."
+      }
+    ]
+  },
+
+  "email_series": {
+    "series_intro": "A 2-sentence description of what this email series does for ${bName}'s new subscribers. Written to display on the results page.",
+    "emails": [
+      {
+        "day": 1,
+        "subject": "A specific, compelling subject line for email 1",
+        "preview_text": "The preview text that shows in the inbox (40-60 chars)",
+        "purpose": "What this email accomplishes strategically (1 sentence)",
+        "body": "The complete email body (200-350 words). Written in ${bName}'s voice. Day 1 should deliver immediate value — give them something actionable about their brand positioning. Not fluff. A real tool, framework, or exercise they can use today. Address them by name with {{first_name}}. Sign off as the ${bName} team or founder."
+      },
+      {
+        "day": 2,
+        "subject": "Subject line for day 2",
+        "preview_text": "Preview text (40-60 chars)",
+        "purpose": "Strategic purpose (1 sentence)",
+        "body": "Complete email (200-350 words). Day 2: How to brief a designer or collaborator using their brand positioning. Give them a specific framework or template they can copy-paste. Practical, not theoretical."
+      },
+      {
+        "day": 3,
+        "subject": "Subject line for day 3",
+        "preview_text": "Preview text (40-60 chars)",
+        "purpose": "Strategic purpose (1 sentence)",
+        "body": "Complete email (200-350 words). Day 3: Writing consistently in their brand voice. Give them 3-5 'voice rules' specific to ${bName} and show before/after examples of generic vs. on-brand copy."
+      },
+      {
+        "day": 4,
+        "subject": "Subject line for day 4",
+        "preview_text": "Preview text (40-60 chars)",
+        "purpose": "Strategic purpose (1 sentence)",
+        "body": "Complete email (200-350 words). Day 4: The one piece of content to create this week. Be specific — tell them exactly what to post, on which platform, and why. Tie it back to their positioning."
+      },
+      {
+        "day": 5,
+        "subject": "Subject line for day 5",
+        "preview_text": "Preview text (40-60 chars)",
+        "purpose": "Strategic purpose (1 sentence)",
+        "body": "Complete email (200-350 words). Day 5: The bigger picture — what to do next with their positioning. What most brands get wrong at this stage. End with a soft invitation to go deeper (this is where ${bName}/Bidya can pitch their service)."
+      }
+    ]
+  }
+}`;
 }
 
 function displayResults(d){
@@ -960,8 +1075,14 @@ function displayResults(d){
   const posts=d.content_strategy?.posts||[];
   document.getElementById('content-body').innerHTML=`
     <div class="r-block fade-in"><div class="r-label">Your Content Strategy</div><h3>5 pieces written in your voice</h3><p>These aren't templates. They're written as ${bName}. Use them as-is or as a starting point.</p></div>
-    ${posts.map(p=>`<div class="content-card fade-in"><div class="platform">${p.platform}</div><div class="post-text">${p.post}</div><div class="rationale"><strong>Why this works:</strong> ${p.why_it_works}</div></div>`).join('')}
-    <div class="dark-callout fade-in" style="margin-top:32px"><div class="r-label">What Happens Next</div><h3>Your full playbook is on its way to ${uEmail}</h3><p style="margin-top:10px">Over the next 5 days we'll send a practical series — from briefing designers using your positioning, to writing consistently in your brand voice.</p></div>`;
+    ${posts.map(p=>`<div class="content-card fade-in"><div class="platform">${p.platform}</div><div class="post-text">${p.post}</div><div class="rationale"><strong>Why this works:</strong> ${p.why_it_works}</div></div>`).join('')}`;
+  // ── Email Series tab ──
+  const es=d.email_series||{};
+  const emails=es.emails||[];
+  document.getElementById('emails-body').innerHTML=`
+    <div class="r-block fade-in"><div class="r-label">5-Day Follow-up Series</div><h3>Practical emails to help ${bName} implement</h3><p>${es.series_intro||'Over 5 days, these emails walk you through turning your positioning into real brand moves — from briefing designers to writing in your voice.'}</p></div>
+    ${emails.map(e=>`<div class="email-card-result fade-in"><div class="email-day">Day ${e.day}</div><div class="email-subject">${e.subject}</div><div class="email-preview">${e.preview_text||''}</div><div class="email-purpose"><strong>Goal:</strong> ${e.purpose||''}</div><div class="email-body">${e.body||''}</div></div>`).join('')}
+    <div class="dark-callout fade-in" style="margin-top:32px"><div class="r-label">What Happens Next</div><h3>Your full playbook is on its way to ${uEmail}</h3><p style="margin-top:10px">We'll deliver these 5 emails over the next 5 days — each one giving you a specific action to take with your new positioning.</p></div>`;
 }
 
 function switchTab(name,btn){
@@ -976,11 +1097,94 @@ function switchTab(name,btn){
 async function sendWebhook(payload){
   const url='YOUR_MAKE_OR_ZAPIER_WEBHOOK_URL_HERE';
   if(url.includes('YOUR_'))return;
-  try{await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});}catch(e){console.warn('Webhook failed',e);}
+  // Flatten the payload so Make.com / Zapier can map fields easily
+  const flat={
+    first_name:payload.uName,
+    brand_name:payload.bName,
+    email:payload.uEmail,
+    brand_industry:payload.answers?.brand_industry||'',
+    customer_truth:payload.answers?.customer_truth||'',
+    transformation:payload.answers?.transformation||'',
+    origin:payload.answers?.origin||'',
+    difference:payload.answers?.difference||'',
+    content_feeling:payload.answers?.content_feeling||'',
+    brand_values:(payload.answers?.brand_values||[]).join(', '),
+    brand_tone:payload.answers?.brand_tone||'',
+    content_comfort:payload.answers?.content_comfort||'',
+    ambition:payload.answers?.ambition||'',
+    archetype:payload.output?.playbook?.archetype_name||'',
+    positioning_statement:payload.output?.playbook?.positioning_statement||'',
+    core_message:payload.output?.playbook?.core_message||'',
+    storytelling_model:payload.output?.storytelling_model||'',
+    headline:payload.output?.headline||'',
+    email_day1_subject:payload.output?.email_series?.emails?.[0]?.subject||'',
+    email_day1_body:payload.output?.email_series?.emails?.[0]?.body||'',
+    email_day2_subject:payload.output?.email_series?.emails?.[1]?.subject||'',
+    email_day2_body:payload.output?.email_series?.emails?.[1]?.body||'',
+    email_day3_subject:payload.output?.email_series?.emails?.[2]?.subject||'',
+    email_day3_body:payload.output?.email_series?.emails?.[2]?.body||'',
+    email_day4_subject:payload.output?.email_series?.emails?.[3]?.subject||'',
+    email_day4_body:payload.output?.email_series?.emails?.[3]?.body||'',
+    email_day5_subject:payload.output?.email_series?.emails?.[4]?.subject||'',
+    email_day5_body:payload.output?.email_series?.emails?.[4]?.body||'',
+    full_results_json:JSON.stringify(payload.output)
+  };
+  try{await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(flat)});}catch(e){console.warn('Webhook failed',e);}
+}
+
+// ── EMAIL PROVIDER INTEGRATION ──
+// Supports: Kit (ConvertKit), Mailchimp, or any provider with a form/API endpoint
+async function sendToEmailProvider(payload){
+  // ── OPTION A: Kit (ConvertKit) — recommended ──
+  // Replace with your Kit form ID. Find it at: app.kit.com → Forms → select form → Settings
+  const KIT_FORM_ID='YOUR_KIT_FORM_ID_HERE';
+  if(!KIT_FORM_ID.includes('YOUR_')){
+    try{
+      await fetch(`https://api.convertkit.com/v3/forms/${KIT_FORM_ID}/subscribe`,{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({
+          api_key:'YOUR_KIT_PUBLIC_API_KEY_HERE',
+          email:payload.uEmail,
+          first_name:payload.uName,
+          fields:{
+            brand_name:payload.bName,
+            archetype:payload.output?.playbook?.archetype_name||'',
+            positioning:payload.output?.playbook?.positioning_statement||'',
+            core_message:payload.output?.playbook?.core_message||'',
+            storytelling_model:payload.output?.storytelling_model||'',
+            headline:payload.output?.headline||''
+          },
+          tags:['positioning-iq-completed']
+        })
+      });
+    }catch(e){console.warn('Kit subscribe failed',e);}
+    return;
+  }
+
+  // ── OPTION B: Mailchimp (via their embedded form action URL) ──
+  const MAILCHIMP_URL='YOUR_MAILCHIMP_FORM_ACTION_URL_HERE';
+  if(!MAILCHIMP_URL.includes('YOUR_')){
+    try{
+      const formData=new URLSearchParams();
+      formData.append('EMAIL',payload.uEmail);
+      formData.append('FNAME',payload.uName);
+      formData.append('BRAND',payload.bName);
+      formData.append('ARCHETYPE',payload.output?.playbook?.archetype_name||'');
+      await fetch(MAILCHIMP_URL,{method:'POST',mode:'no-cors',body:formData});
+    }catch(e){console.warn('Mailchimp subscribe failed',e);}
+    return;
+  }
 }
 
 function getFallback(){
-  return{storytelling_model:"Conviction",headline:`${bName} — The Story Worth Telling`,subline:"A brand built on something real. Here's how to make sure the world knows it.",playbook:{archetype_name:"The Deliberate Contrarian",archetype_description:`${bName} has built something that runs counter to how most brands in this space operate. That's not an accident — it's the whole point. The risk isn't being different. It's letting that difference get sanded down by the pressure to look like everyone else.`,positioning_statement:`${bName} exists for people who are done being sold a version of something that doesn't quite fit. We do things the slower, more considered way — because we've seen what cutting corners does to the people on the other end.`,core_message:"We'd rather be trusted than trending.",voice_principles:["Write like you have nothing to prove","Say the specific thing, not the safe thing","Make the reader feel seen before you mention yourself","Don't explain what you do — show what you believe"],differentiation:`Most brands in your space are competing on speed or price. ${bName} is competing on integrity — a longer game but a stickier one. When you're the brand people trust, they stop price-comparing you.`,audience_insight:`Your customer isn't just looking for a product. They're looking for confirmation that their instincts are right — that there's a better way. ${bName} can be the brand that validates that feeling.`,what_to_stop:"Stop writing copy that describes what you do. Your brand communication should make people feel something about who you are.",what_to_start:"Start sharing the decisions — the ones that cost you something, the ones you made because it was right, not easy. That's what builds real brand equity."},case_study:{title:`Why ${bName} Doesn't Need to Shout`,section_headers:["The Attention Economy Has a Trust Problem",`What ${bName} Is Actually Selling`,"The Long Game"],cultural_hook:`There's a strange thing that happens in noisy markets. The louder everything gets, the more valuable silence becomes. Not the silence of absence — the silence of a brand confident enough to wait.\n\nWe've seen this pattern repeat across industries. The brands that outlast their category aren't always the ones that outspent it. Sometimes they're the ones who stayed in the room, said something true, and let it do the travelling.`,brand_analysis:`${bName} is operating in exactly this space. The brand isn't trying to be the loudest voice in the category. It's trying to be the most honest one.\n\nWhat makes this worth studying isn't just the product — it's the philosophy underneath it. There's a clarity to how ${bName} thinks about its customer that most brands in the same space simply don't have.`,growth_implication:`The growth logic here is counterintuitive but real: the more specific and honest a brand is, the more fiercely its people protect it. ${bName} isn't trying to reach everyone. It's trying to reach the right ones deeply enough that they do the reaching on its behalf.\n\nThat's not a marketing tactic. That's a compounding asset.`},content_strategy:{pillars:["The real work behind what we do","Stories from the people we built this for","Small truths worth saying out loud"],posts:[{platform:"Instagram Caption",post:`We made a thing we're proud of.\n\nNot because it's perfect — it isn't. But because it's honest.\n\nAnd we think that's rarer than people say it is.\n\n— ${bName}`,why_it_works:"Short, earned confidence. No product pitch. The brand's conviction speaks for itself."},{platform:"LinkedIn Post",post:`We turned down a partnership last month.\n\nGood money. Good people. Wrong fit.\n\nI used to think saying no to things like that was a luxury. Now I think it might be the whole strategy.\n\nWhen your brand knows what it is, the decisions get easier.`,why_it_works:"Shows brand values in action, not in a mission statement."},{platform:"Short-form Video Hook",post:`"Most brands in our space talk about what they offer.\n\nWe're going to talk about what we almost got wrong — and why it made everything better."`,why_it_works:"Opens with honesty instead of hype. Builds trust before the pitch."},{platform:"Email Subject Line",post:"Option 1: \"Something we don't usually say out loud\"\nOption 2: \"The reason we almost didn't launch this\"\nOption 3: \"For the person who almost didn't open this\"",why_it_works:"All three lean into curiosity without clickbait. They feel human."},{platform:"Packaging Insert",post:`You didn't just buy a product.\n\nYou bought into a way of thinking about things.\n\nWe hope it shows.\n\n— The ${bName} team`,why_it_works:"Turns a functional insert into a quiet emotional connection at the perfect moment."}]}};}
+  const bi=answers.brand_industry||bName;
+  const ct=answers.customer_truth||'someone looking for something better';
+  const tr=answers.transformation||'they feel like they found what they were looking for';
+  const og=answers.origin||'a belief that things could be done differently';
+  const df=answers.difference||'an uncompromising approach to quality';
+  return{storytelling_model:"Conviction",headline:`${bName} — The Story Worth Telling`,subline:`A brand built on something real. Here's how to make sure the world knows it.`,playbook:{archetype_name:"The Deliberate Contrarian",archetype_description:`${bName} has built something that runs counter to how most brands in this space operate. That's not an accident — it's the whole point. The risk isn't being different. It's letting that difference get sanded down by the pressure to look like everyone else. What makes ${bName} worth paying attention to is the refusal to cut corners — even when nobody's watching.`,positioning_statement:`${bName} exists for people who are done being sold a version of something that doesn't quite fit. We do things the slower, more considered way — because we've seen what cutting corners does to the people on the other end.`,core_message:"We'd rather be trusted than trending.",voice_principles:["Write like you have nothing to prove — earned confidence, not performance","Say the specific thing, not the safe thing — details build trust","Make the reader feel seen before you mention yourself or your product","Let your process speak — show the work, not just the result","Don't explain what you do — show what you believe and why it matters"],differentiation:`Most brands in your space are competing on speed, price, or aesthetics. ${bName} is competing on integrity — and that's a longer game, but a stickier one.\n\nWhen you're the brand people trust, they stop price-comparing you. They stop looking for alternatives. They start telling other people about you — not because you asked, but because recommending ${bName} says something about them too.\n\nThe edge isn't just what you do differently. It's that you do it consistently, even when it's harder. That consistency is what turns first-time buyers into people who'd genuinely be upset if you disappeared.`,audience_insight:`Your customer isn't just looking for a product. They're looking for confirmation that their instincts are right — that there IS a better way, and someone is actually doing it.\n\nThey've been burned by brands that talked a big game but cut corners where it mattered. They've developed a radar for authenticity, and when they find something real, they hold on to it. ${bName} can be the brand that validates that feeling — the one that makes them think, "finally, someone who gets it."\n\nThese aren't passive consumers. They're people who've thought about what they want and are willing to pay more for it.`,what_to_stop:"Stop writing copy that describes what you do. Your audience already knows what you do — what they want to know is what you believe and why you built this. Every piece of communication should make someone feel something about who ${bName} is, not just what it sells.",what_to_start:`Start sharing the decisions — the ones that cost you something, the ones you made because it was right, not easy. This week: write one post about a choice you made that most brands in your space wouldn't make. That's what builds real brand equity for ${bName}.`},case_study:{title:`Why ${bName} Doesn't Need to Shout`,section_headers:["The Attention Economy Has a Trust Problem",`What ${bName} Is Actually Selling`,"Why This Approach Compounds"],cultural_hook:`There's a strange thing that happens in noisy markets. The louder everything gets, the more valuable silence becomes. Not the silence of absence — the silence of a brand confident enough to wait.\n\nWe've seen this pattern repeat across industries. The brands that outlast their category aren't always the ones that outspent it. Sometimes they're the ones who stayed in the room, said something true, and let it do the travelling.\n\n"The brands that survive aren't the loudest. They're the ones that gave people a reason to listen — and then kept giving them reasons to stay."\n\nThis is the space ${bName} has chosen to operate in. And it's a more powerful position than most people realise.`,brand_analysis:`${bName} is operating in exactly this space. The brand isn't trying to be the loudest voice in the category. It's trying to be the most honest one.\n\nWhat makes this worth studying isn't just the product — it's the philosophy underneath it. There's a clarity to how ${bName} thinks about its customer that most brands in the same space simply don't have. It shows up in the details: ${df}.\n\nThe origin story matters here too: ${og}. That's not marketing copy — it's a genuine reason the brand exists. And customers can feel the difference between a brand that was started to fill a gap in the market and one that was started because the founder couldn't not start it.\n\n"When your brand exists because of conviction rather than opportunity, the story tells itself. ${bName} isn't trying to manufacture a narrative. It's living one."`,growth_implication:`The growth logic here is counterintuitive but real: the more specific and honest a brand is, the more fiercely its people protect it. ${bName} isn't trying to reach everyone. It's trying to reach the right ones deeply enough that they do the reaching on its behalf.\n\nThat's not a marketing tactic. That's a compounding asset. Every person who discovers ${bName} and stays becomes a node in a trust network that no amount of ad spend can buy. The question isn't "how do we grow faster?" — it's "how do we make every person who finds us into someone who'd genuinely be disappointed if we stopped?"\n\nThe positioning lesson for ${bName}: Don't scale the audience. Scale the depth of the relationship. The growth follows.`},content_strategy:{pillars:[`The real work behind what ${bName} makes`,"Stories from the people who found us and stayed","Small truths worth saying out loud"],posts:[{platform:"Instagram Caption",post:`We made a thing we're proud of.\n\nNot because it's perfect — it isn't. But because it's honest.\n\nEvery detail was a decision. Every decision was a refusal to do it the easy way.\n\nAnd we think that's rarer than people say it is.\n\n— ${bName}`,why_it_works:"Short, earned confidence. No product pitch. The brand's conviction speaks for itself. The line 'Every decision was a refusal' gives specificity without being heavy-handed."},{platform:"LinkedIn Post",post:`We turned down a partnership last month.\n\nGood money. Good people. Wrong fit.\n\nI used to think saying no to things like that was a luxury. Now I think it might be the whole strategy.\n\nWhen your brand knows what it is, the decisions get easier. Not easy — easier. There's a difference. Easy is saying yes to everything that pays. Easier is knowing your criteria well enough that the answer is obvious before the meeting starts.\n\n${bName} has turned down more opportunities than we've taken. And every time, the thing we said yes to next was better for it.`,why_it_works:"Shows brand values in action, not in a mission statement. The structure — short opener, personal reflection, strategic insight — works perfectly for LinkedIn's format."},{platform:"Short-form Video Hook",post:`[Camera close on hands working, no face yet]\n"Most brands in our space talk about what they offer."\n\n[Cut to wider shot]\n"We're going to talk about what we almost got wrong — and why it made everything better."\n\n[Cut to product/process shot]\n"Because the best part of ${bName}'s story isn't the product. It's the part we almost gave up on."`,why_it_works:"Opens with honesty instead of hype. The visual direction creates intimacy. Builds trust before the pitch. The 'almost gave up' hook creates genuine curiosity."},{platform:"Email Subject Lines",post:`Curiosity: "Something we don't usually say out loud"\nVulnerability: "The reason we almost didn't launch this"\nBoldness: "We're not for everyone — here's how to tell"\nSpecificity: "What happens at ${bName} before 7am"\nWarmth: "For the person who almost didn't open this"`,why_it_works:"Each line uses a different psychological lever. None of them feel like marketing — they feel like a person talking. The specificity line ('before 7am') works because it promises a behind-the-scenes moment."},{platform:"Packaging Insert / Order Confirmation",post:`You didn't just buy a product.\n\nYou bought into a way of thinking about things — that the details matter, that the process matters, that the people on the other end matter.\n\nWe hope it shows.\n\nAnd if it does? Tell someone. Not for us — for them.\n\n— The ${bName} team`,why_it_works:"Turns a functional moment into a quiet emotional connection. The 'tell someone — not for us, for them' line reframes word-of-mouth as generosity rather than promotion."}]},email_series:{series_intro:`Over the next 5 days, ${bName} is going to receive a short practical email series — each one designed to help you turn your brand positioning into real moves. Not theory. Things you can do this week.`,emails:[{day:1,subject:`Your ${bName} positioning is ready — here's how to use it today`,preview_text:`The one exercise that makes everything else easier`,purpose:`Give them an immediate, actionable win with their positioning.`,body:`Hey {{first_name}},\n\nYour Positioning IQ results for ${bName} are ready — and they're worth reading carefully.\n\nBut before you dive into the full playbook, here's the single most useful thing you can do today:\n\nTake your core message and write it on something you'll see every day. A sticky note. Your phone wallpaper. The top of your Notion page.\n\nYour core message is the filter. Every piece of content, every partnership, every product decision should pass through it. If it doesn't align, it doesn't ship.\n\nHere's a quick test: open your last 3 Instagram posts (or emails, or whatever you publish most). Read your core message, then re-read those posts. Do they feel like they came from the same brand?\n\nIf yes — you're more aligned than most. If no — that's your starting point. And that's completely fine.\n\nTomorrow, we'll talk about how to brief anyone — a designer, a copywriter, a collaborator — using your positioning. So they get ${bName} right, even without you in the room.\n\nTalk soon,\nThe Positioning IQ team`},{day:2,subject:`How to make anyone "get" ${bName} in 5 minutes`,preview_text:`The brand brief template you'll use forever`,purpose:`Give them a reusable brand brief framework.`,body:`Hey {{first_name}},\n\nThe hardest part of growing ${bName} isn't the work — it's getting other people to do the work the way you would.\n\nDesigners who almost get it. Copywriters who use the wrong tone. Collaborators who miss the point.\n\nHere's a one-page brief format that fixes this. Send it to anyone before they create anything for ${bName}:\n\n—\nBRAND: ${bName}\nWE ARE: [Your archetype — from your playbook]\nWE SOUND LIKE: [Your voice principles — from your playbook]\nOUR CUSTOMER IS: [Not demographics. The real person. The feeling they have when they find us.]\nWE NEVER: [The thing you refuse to do. The line you won't cross.]\nTHIS PIECE SHOULD MAKE SOMEONE FEEL: [Pick one feeling per project]\n—\n\nThat's it. One page. No 40-slide brand deck.\n\nThe trick is the "WE NEVER" line. That single constraint does more work than any mood board. It tells people where the edges are — and great creative work happens at the edges.\n\nFill this out today. Save it somewhere you can find it. You'll use it more than you think.\n\nTomorrow: how to write consistently in ${bName}'s voice — even on days when you don't feel like it.\n\n— The Positioning IQ team`},{day:3,subject:`Writing as ${bName} (even when you don't feel inspired)`,preview_text:`3 voice rules that make writing easier, not harder`,purpose:`Help them write consistently in their brand voice.`,body:`Hey {{first_name}},\n\nMost brands struggle with voice consistency. Not because they don't know how they want to sound — but because they don't have rules simple enough to follow on a Tuesday afternoon when they're tired and need to post something.\n\nHere are 3 rules that make writing as ${bName} easier:\n\n1. THE SWAP TEST\nWrite your post. Then swap in a competitor's name. If it still works — it's too generic. Rewrite until only ${bName} could say it.\n\nBefore: "We believe in quality and authenticity."\nAfter: [Something only ${bName} could say, referencing your specific process, product, or belief]\n\n2. THE DINNER PARTY RULE\nYour voice profile said ${bName} communicates like a specific type of person. Before you post, ask: would that person say this? In this way? If it sounds like a press release, it's wrong.\n\n3. THE "SO WHAT" PASS\nRead every sentence and ask "so what?" after it. If you can't answer — cut it. Your audience is smart. Respect their time.\n\nTry this today: take something you've already written — a caption, an email, a product description — and run it through all three rules. The rewrite will be better. I promise.\n\nTomorrow: the one piece of content to create and post this week.\n\n— The Positioning IQ team`},{day:4,subject:`Post this for ${bName} this week`,preview_text:`One specific content piece, ready to adapt`,purpose:`Give them a specific, actionable content piece to create.`,body:`Hey {{first_name}},\n\nEnough frameworks. Let's make something.\n\nThis week, create ONE piece of content for ${bName}. Here's exactly what to do:\n\nTHE FORMAT: A "behind the decision" post.\n\nTHE STRUCTURE:\n- Open with a choice you made recently (what you said no to, what you chose to do differently, what took longer because you refused to shortcut it)\n- Explain why — not defensively, just honestly\n- End with what it means for the person reading\n\nTHE PLATFORM: Post it wherever your best customers spend time. If you're not sure, start with Instagram stories (lower pressure, higher intimacy).\n\nWHY THIS WORKS:\nYour positioning is built on conviction. The fastest way to communicate conviction isn't to state your values — it's to show a moment where those values cost you something. That's what makes it real.\n\nPeople don't share mission statements. They share moments of honesty.\n\nOne post. This week. That's all.\n\nTomorrow is our last email — and it's about the thing most brands get wrong after they figure out their positioning.\n\n— The Positioning IQ team`},{day:5,subject:`The mistake most brands make after finding their positioning`,preview_text:`And what to do instead`,purpose:`Set up the long game and soft-pitch deeper services.`,body:`Hey {{first_name}},\n\nHere's what usually happens after a brand figures out their positioning:\n\nThey get excited. They redesign everything. They rewrite their bio, update their website, create a content calendar for the next 3 months. They burn bright for 2 weeks.\n\nThen they go quiet.\n\nThe mistake isn't the burst of energy — it's thinking positioning is a project instead of a practice. ${bName}'s positioning isn't something you implement once. It's something you return to every time you make a decision.\n\nSo here's my actual advice for what comes next:\n\n1. DON'T redesign everything at once. Pick one touchpoint — your Instagram bio, your email welcome sequence, your packaging copy — and align it with your new positioning. Then move to the next one.\n\n2. DO review your positioning playbook once a month. Not to change it — to remember it. The brands that win aren't the ones with the best strategy. They're the ones who actually stick to it.\n\n3. CONSIDER whether you need a partner in this. Some brands can self-implement. Others benefit from someone who can hold the vision while they run the business.\n\nIf ${bName} is in the second camp — someone who'd benefit from hands-on strategic support — we'd love to talk. Not a pitch. A conversation about where you're headed and whether we can help.\n\nEither way: you now have a positioning most brands spend months (and thousands) trying to find. Use it.\n\nIt's been a pleasure working on ${bName}'s story.\n\n— The Positioning IQ team`}]}};
+}
 </script>
 </body>
 </html>
