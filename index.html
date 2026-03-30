@@ -896,23 +896,36 @@ async function submitEmail(){
 
 async function generateAll(){
   try{
-    // Route through Netlify serverless function (keeps API key safe)
-    const res=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:buildPrompt()})});
-    if(!res.ok) throw new Error('API returned '+res.status);
+    const {system, user}=buildPrompt();
+    const res=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:user, system:system})});
+    if(!res.ok){
+      const errData=await res.json().catch(()=>({}));
+      console.error('API error details:',errData);
+      throw new Error(errData.message||errData.error||'API returned '+res.status);
+    }
     const data=await res.json();
     const raw=data.content?.[0]?.text||'';
-    let parsed;try{parsed=JSON.parse(raw.replace(/```json|```/g,'').trim());}catch{parsed=getFallback();}
+    let parsed;
+    try{
+      parsed=JSON.parse(raw.replace(/```json|```/g,'').trim());
+    }catch(parseErr){
+      console.error('JSON parse error, raw response:',raw.substring(0,500));
+      parsed=getFallback();
+    }
     displayResults(parsed);
     sendWebhook({uName,bName,uEmail,answers,output:parsed});
     sendToEmailProvider({uName,bName,uEmail,answers,output:parsed});
-  }catch(e){console.error(e);displayResults(getFallback());sendWebhook({uName,bName,uEmail,answers,output:getFallback()});sendToEmailProvider({uName,bName,uEmail,answers,output:getFallback()});}
+  }catch(e){console.error('generateAll error:',e);displayResults(getFallback());sendWebhook({uName,bName,uEmail,answers,output:getFallback()});sendToEmailProvider({uName,bName,uEmail,answers,output:getFallback()});}
 }
 
 function buildPrompt(){
   const a=answers;
   // Extract brand name from quiz Q1 as backup (the answer often starts with the brand name)
   const quizBrand=a.brand_industry||'';
-  return `You are a world-class brand strategist, editorial writer, and creative director. You write with the authority of someone who has studied thousands of brands — but the warmth of a brilliant friend who genuinely wants this brand to win.
+
+  const system=`You are a world-class brand strategist, editorial writer, and creative director. You write with the authority of someone who has studied thousands of brands — but the warmth of a brilliant friend who genuinely wants this brand to win.
+
+You MUST return ONLY valid JSON. No markdown, no backticks, no preamble, no commentary outside the JSON object.
 
 CRITICAL RULES:
 - The brand is called "${bName}". Use "${bName}" by name throughout. NEVER use the founder's name "${uName}" as the brand name.
@@ -921,9 +934,9 @@ CRITICAL RULES:
 - The brand description says: "${quizBrand}" — use this to understand what TYPE of product/service/brand this is. Tailor every recommendation to this specific industry, business model, and offering. A skincare brand gets different advice than a consultancy. A food brand gets different content than a tech startup.
 - Write with personality. Be vivid. Be opinionated. Give them language they'd screenshot and send to their team.
 - Never use filler phrases like "In today's competitive landscape" or "In the modern marketplace." Start with something specific to ${bName}.
-- In the content strategy posts, reference the SPECIFIC type of product/service ${bName} offers. If they sell skincare, mention ingredients or routines. If they're a consultancy, reference client transformations. If they sell food, talk about taste, sourcing, preparation. Make it unmistakably about THEIR business.
+- In the content strategy posts, reference the SPECIFIC type of product/service ${bName} offers. If they sell skincare, mention ingredients or routines. If they're a consultancy, reference client transformations. If they sell food, talk about taste, sourcing, preparation. Make it unmistakably about THEIR business.`;
 
-BRAND QUIZ ANSWERS FOR ${bName}:
+  const user=`BRAND QUIZ ANSWERS FOR ${bName}:
 1. Brand & what it does: ${quizBrand}
 2. Their ideal customer (in their own words): ${a.customer_truth||'not provided'}
 3. The transformation they deliver: ${a.transformation||'not provided'}
@@ -1003,6 +1016,8 @@ Return ONLY valid JSON (no backticks, no preamble, no markdown wrapping):
     ]
   }
 }`;
+
+  return {system, user};
 }
 
 function displayResults(d){
