@@ -42,8 +42,8 @@ export default async function handler(req) {
     }
 
     const requestBody = {
-      model: "claude-sonnet-4-20250514",
-      max_tokens: 12000,
+      model: "claude-3-5-sonnet-20241022",
+      max_tokens: 8096,
       messages: [{ role: "user", content: prompt }],
     };
 
