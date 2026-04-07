@@ -843,10 +843,10 @@ function renderQ(){
   }else if(q.type==='multi'){
     selMulti=answers[q.id]?[...answers[q.id]]:[];
     h+=`<div class="choices">`;
-    q.options.forEach(o=>{
+    q.options.forEach((o,i)=>{
       const s=selMulti.includes(o)?' multi-sel':'';
       const m=selMulti.includes(o)?'✓':'○';
-      h+=`<div class="choice${s}" onclick="toggleMulti(this,'${o.replace(/'/g,"\'")}','${q.id}')"><span class="choice-ltr">${m}</span><div class="choice-body">${o}</div></div>`;
+      h+=`<div class="choice${s}" data-midx="${i}" data-qid="${q.id}"><span class="choice-ltr">${m}</span><div class="choice-body">${o}</div></div>`;
     });
     h+=`</div><p style="font-size:12px;color:var(--text-faint);margin-top:10px;font-weight:500">Select all that apply</p>`;
     if(selMulti.length>0)setTimeout(()=>{document.getElementById('nbtn').disabled=false;},40);
@@ -859,6 +859,17 @@ function renderQ(){
   }
   h+=`</div>`;
   document.getElementById('qcontainer').innerHTML=h;
+  // Bind multi-select click handlers using data attributes (avoids apostrophe escaping issues)
+  if(q.type==='multi'){
+    document.querySelectorAll('[data-midx]').forEach(el=>{
+      el.addEventListener('click',function(){
+        const idx=parseInt(this.dataset.midx);
+        const qId=this.dataset.qid;
+        const val=Qs[cQ].options[idx];
+        toggleMulti(this,val,qId);
+      });
+    });
+  }
 }
 
 function onTxt(el){document.getElementById('nbtn').disabled=el.value.trim().length<4;}
