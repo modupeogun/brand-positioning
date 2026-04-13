@@ -907,153 +907,181 @@ async function submitEmail(){
 
 async function generateAll(){
   try{
-    const {system, user}=buildPrompt();
-    const res=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:user, system:system})});
-    if(!res.ok){
-      const errData=await res.json().catch(()=>({}));
-      console.error('API error details:',errData);
-      throw new Error(errData.message||errData.error||'API returned '+res.status);
-    }
-    const data=await res.json();
-    const raw=data.content?.[0]?.text||'';
-    let parsed;
-    try{
-      parsed=JSON.parse(raw.replace(/```json|```/g,'').trim());
-    }catch(parseErr){
-      console.error('JSON parse error, raw response:',raw.substring(0,500));
-      parsed=getFallback();
-    }
+    const prompts=buildPrompts();
+    // Fire all 3 section calls in parallel so total wall-clock time is just
+    // the slowest single call — avoids Netlify 504 on the monolithic prompt.
+    const [playbookData, caseStudyData, contentStrategyData]=await Promise.all([
+      callAPI(prompts.playbook),
+      callAPI(prompts.caseStudy),
+      callAPI(prompts.contentStrategy)
+    ]);
+    // Merge the three section responses into a single result object.
+    const parsed={
+      storytelling_model:playbookData.storytelling_model||'Conviction',
+      headline:playbookData.headline||`${bName} — The Story Worth Telling`,
+      subline:playbookData.subline||`A brand built on something real.`,
+      playbook:playbookData.playbook||getFallback().playbook,
+      case_study:caseStudyData.case_study||getFallback().case_study,
+      content_strategy:contentStrategyData.content_strategy||getFallback().content_strategy
+    };
     displayResults(parsed);
     sendWebhook({uName,bName,uEmail,answers,output:parsed});
     sendToEmailProvider({uName,bName,uEmail,answers,output:parsed});
-  }catch(e){console.error('generateAll error:',e);displayResults(getFallback());sendWebhook({uName,bName,uEmail,answers,output:getFallback()});sendToEmailProvider({uName,bName,uEmail,answers,output:getFallback()});}
+  }catch(e){
+    console.error('generateAll error:',e);
+    displayResults(getFallback());
+    sendWebhook({uName,bName,uEmail,answers,output:getFallback()});
+    sendToEmailProvider({uName,bName,uEmail,answers,output:getFallback()});
+  }
 }
 
-function buildPrompt(){
+async function callAPI({system, user}){
+  const res=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:user, system:system})});
+  if(!res.ok){
+    const errData=await res.json().catch(()=>({}));
+    console.error('API error details:',errData);
+    throw new Error(errData.message||errData.error||'API returned '+res.status);
+  }
+  const data=await res.json();
+  const raw=data.content?.[0]?.text||'';
+  try{
+    return JSON.parse(raw.replace(/```json|```/g,'').trim());
+  }catch(parseErr){
+    console.error('JSON parse error, raw response:',raw.substring(0,500));
+    return {};
+  }
+}
+
+function buildPrompts(){
   const a=answers;
-  // Extract brand name from quiz Q1 as backup (the answer often starts with the brand name)
   const quizBrand=a.brand_industry||'';
 
-  const system=`You are a world-class brand strategist, editorial writer, and creative director. You write with the authority of someone who has studied thousands of brands — but the warmth of a brilliant friend who genuinely wants this brand to win.
+  // Shared voice/interpretation rules — sent as the system message in every call.
+  const baseSystem=`You are a world-class brand strategist, editorial writer, and creative director. You write with the authority of someone who has studied thousands of brands — but the warmth of a brilliant friend who genuinely wants this brand to win.
 
 You MUST return ONLY valid JSON. No markdown, no backticks, no preamble, no commentary outside the JSON object.
 
 ═══ VOICE & PERSPECTIVE (NON-NEGOTIABLE) ═══
 - Write in SECOND PERSON throughout. Say "you", "your brand", "your customer". You are speaking directly to the brand owner.
 - NEVER refer to them in the third person. Do NOT say "the founder", "the owner", "the brand owner", "they", "she", or "he". If you catch yourself writing "the founder struggled with..." rewrite it as "you struggled with..." or "your brand was born out of...".
-- NEVER say things like "based on what you told us" or "from your quiz answers". That breaks the spell. Just state the insight directly, as if it's obvious truth.
-- The brand is called "${bName}". Use "${bName}" when referring to the brand as an entity (e.g. "${bName} operates like...", "what ${bName} stands for"). Use "you/your" when addressing the owner directly.
-- NEVER use the owner's name "${uName}" as the brand name. NEVER use "${uName}" at all in the output — always address them as "you".
+- NEVER say things like "based on what you told us" or "from your quiz answers". Just state the insight directly, as if it's obvious truth.
+- The brand is called "${bName}". Use "${bName}" when referring to the brand as an entity. Use "you/your" when addressing the owner directly.
+- NEVER use the owner's name "${uName}" in the output — always address them as "you".
 
 ═══ INTERPRETATION (CRITICAL) ═══
-- DO NOT quote the quiz answers verbatim. The quiz input is raw, often incomplete, sometimes badly phrased. Your job is to INTERPRET it, extract the substance, and rewrite it into polished, natural prose.
-- NEVER paste a quiz answer directly into a sentence where the grammar doesn't flow. If the answer doesn't fit the sentence, rewrite the sentence OR rewrite the quiz answer into a clean phrase.
-- EVERY sentence you write must be complete, grammatical, and meaningful. No trailing ellipses. No dangling clauses. No "..." to indicate missing text. If you don't have enough material for a sentence, write a different sentence that you DO have material for.
-- If a quiz answer is vague, generic, incomplete, or unhelpful, USE YOUR EXPERTISE to infer what the brand probably means and give confident, specific guidance anyway. You are the strategist — they are paying you to know things they don't yet know about themselves.
-- If a quiz answer is missing entirely, work from the brand description and what you can reasonably infer about their industry, product, and positioning. NEVER say "not provided" or leave blanks.
-- Example of WRONG: "${bName} exists for they've tried everything." ← raw quiz text slapped in.
-- Example of RIGHT: "${bName} exists for people who have tried everything else and are ready for something that actually works." ← interpreted and rewritten into natural prose.
-- Example of WRONG: "You struggled with sensitive skin for..."
-- Example of RIGHT: "You started this because you lived the problem yourself — years of sensitive skin, years of products that promised gentleness and delivered irritation."
+- DO NOT quote the quiz answers verbatim. Interpret the substance and rewrite it into polished, natural prose.
+- NEVER paste a quiz answer into a sentence where the grammar doesn't flow.
+- EVERY sentence must be complete and grammatical. No trailing ellipses. No dangling clauses. No "..." to indicate missing text.
+- If a quiz answer is vague or missing, use your expertise to infer confident, specific guidance. Never reflect the user's uncertainty back at them.
+- Example WRONG: "${bName} exists for they've tried everything." Example RIGHT: "${bName} exists for people who have tried everything else and are ready for something that actually works."
+- Example WRONG: "You struggled with sensitive skin for..." Example RIGHT: "You started this because you lived the problem yourself — years of sensitive skin, years of products that promised gentleness and delivered irritation."
 
 ═══ SPECIFICITY ═══
-- Every single piece of output must be SPECIFIC to ${bName}. If you could swap in another brand's name and the advice would still work, it's too generic. Rewrite it.
-- Reference their actual products/services, their actual customers, their actual origin story, their actual values — but INTERPRETED into polished prose, never pasted in raw.
-- The brand description is: "${quizBrand}" — use this to understand what TYPE of product/service/brand this is. Tailor every recommendation to this specific industry, business model, and offering. A skincare brand gets different advice than a consultancy. A food brand gets different content than a tech startup.
-- Write with personality. Be vivid. Be opinionated. Give them language they'd screenshot and send to their team.
-- Never use filler phrases like "In today's competitive landscape" or "In the modern marketplace."
-- In the content strategy posts, reference the SPECIFIC type of product/service ${bName} offers. If skincare, mention ingredients, routines, skin types. If consultancy, reference client transformations, frameworks. If food, talk about taste, sourcing, preparation. Make it unmistakably about THIS business.
+- Every output must be SPECIFIC to ${bName}. If you could swap in another brand name and the advice still worked, rewrite it.
+- The brand description: "${quizBrand}". Tailor every recommendation to this specific industry, product, and business model.
+- Write with personality. Be vivid. Be opinionated. Never use filler phrases like "In today's competitive landscape".`;
 
-═══ HANDLING VAGUE OR INCOMPLETE ANSWERS ═══
-- If the customer description is vague ("not sure who my customer is"), don't say so in the output. Use the brand description and your expertise to define a likely ideal customer profile for this type of business, then guide them toward it with confidence.
-- If the origin story is thin, lean on the brand description and product category to reconstruct a plausible, emotionally resonant reason the brand exists.
-- If values, transformation, or ambition are missing or generic, infer strong, specific ones that fit the product and positioning.
-- Your job is to GUIDE the user — especially when they seem unsure. Never reflect their uncertainty back at them. Give them a confident point of view they can either adopt or react against.`;
+  // Raw quiz input — sent with every call so each section has full context.
+  const quizInput=`RAW QUIZ INPUT (interpret, do not quote verbatim):
+1. Brand & what it does: ${quizBrand||'(not provided — infer from context)'}
+2. Ideal customer: ${a.customer_truth||'(not provided — use expert judgment based on the brand description)'}
+3. Transformation delivered: ${a.transformation||'(not provided — infer a plausible emotional transformation from the product category)'}
+4. Why this brand exists: ${a.origin||'(not provided — infer a plausible origin from the brand description)'}
+5. Unique edge / what they refuse to compromise: ${a.difference||'(not provided — infer a likely differentiator)'}
+6. The feeling they want first: ${a.content_feeling||'(not provided)'}
+7. Brand values: ${Array.isArray(a.brand_values)&&a.brand_values.length?a.brand_values.join('; '):'(not provided — infer from the brand description)'}
+8. Natural communication style: ${a.brand_tone||'(not provided — infer a fitting voice)'}
+9. Content vulnerability comfort: ${a.content_comfort||'5'}/10
+10. 5-year ambition: ${a.ambition||'(not provided — infer an ambitious but plausible vision)'}
 
-  const user=`RAW QUIZ INPUT FOR ${bName} (you will INTERPRET this, not quote it):
-1. Brand & what it does: ${quizBrand||'(not provided — infer from other answers or treat as a new brand finding its voice)'}
-2. Who their ideal customer is (raw input): ${a.customer_truth||'(not provided — use expert judgment to define a likely ideal customer based on the brand description)'}
-3. The transformation they deliver (raw input): ${a.transformation||'(not provided — infer a plausible, emotionally specific transformation from the product category)'}
-4. Why this brand exists / origin (raw input): ${a.origin||'(not provided — infer a plausible emotional origin based on the brand description and category)'}
-5. Their edge / what they refuse to compromise (raw input): ${a.difference||'(not provided — infer a likely differentiator rooted in their brand description)'}
-6. The feeling they want people to have first: ${a.content_feeling||'(not provided — infer from the brand description)'}
-7. Brand values (raw input): ${Array.isArray(a.brand_values)&&a.brand_values.length?a.brand_values.join('; '):'(not provided — infer from the brand description)'}
-8. Their natural communication style: ${a.brand_tone||'(not provided — infer a fitting voice)'}
-9. Content vulnerability comfort level: ${a.content_comfort||'5'}/10 (1=very curated, 10=raw and unfiltered)
-10. 5-year ambition (raw input): ${a.ambition||'(not provided — infer an ambitious but plausible vision)'}
-Owner's full name (for internal reference only — DO NOT use in output): ${uName}
+REMINDER: Every sentence must be complete. Never use "..." or "the founder". Always write in second person to the brand owner.`;
 
-REMINDER: The text above is RAW QUIZ INPUT. Do not paste it verbatim into your output. Read it, understand it, then REWRITE it into polished, natural, second-person prose. Every sentence in your output must be complete and grammatical. Never use ellipses to indicate missing information. Never say "the founder" — always "you".
+  // ─── SECTION 1: PLAYBOOK (also includes top-level storytelling_model, headline, subline) ───
+  const playbookUser=`${quizInput}
 
-STEP 1 — Assign a storytelling model (use it to shape everything, but never name it to the user):
-SOLITUDE — still, poetic, inward. Power from depth and introspection.
-RITUAL — human moments, memory, comfort, return, the sacred ordinary.
-SERIAL — universe-building, characters, mythology, lore, an unfolding story.
-CONVICTION — values-first, belief-led. The why IS the brand.
-COMMUNITY — belonging, shared identity, collective movement, tribe.
+Assign one storytelling model for ${bName}: SOLITUDE (still, introspective), RITUAL (human moments, memory, comfort), SERIAL (world-building, mythology), CONVICTION (values-first, belief-led), or COMMUNITY (belonging, shared identity). Use it to shape the tone, but never name it to the user.
 
-STEP 2 — Generate all 3 deliverables. Be EXTENSIVE. Write like you're being paid $50,000 for this brand strategy. Every section should feel crafted, not templated. Every recommendation must be tailored to the specific TYPE of business ${bName} is.
-
-Return ONLY valid JSON (no backticks, no preamble, no markdown wrapping):
+Return ONLY valid JSON with this exact shape (no backticks, no preamble):
 
 {
   "storytelling_model": "one of the five models above",
-  "headline": "An evocative, specific headline about ${bName} — max 10 words. Must reference something unique about THEIR brand, their product, or their industry.",
-  "subline": "One vivid sentence capturing ${bName}'s brand story essence. Reference their actual product/service and positioning. Not generic.",
-
+  "headline": "An evocative, specific headline about ${bName} — max 10 words. Reference something unique about the brand, product, or industry.",
+  "subline": "One vivid sentence capturing ${bName}'s brand story essence. Reference the actual product/service and positioning.",
   "playbook": {
-    "archetype_name": "A specific, evocative archetype name invented for ${bName}. NOT generic names like 'The Hero' or 'The Visionary'. e.g. 'The Quiet Radical', 'The Ritual Keeper', 'The Reluctant Expert'.",
-    "archetype_description": "3-4 sentences written in SECOND PERSON addressing the brand owner as 'you'. Explain why this archetype fits YOUR brand specifically. Reference the origin, the specific product/service, the values — but REWRITTEN into polished prose, never quoted raw. Example opener: 'You built ${bName} as a counterweight to an industry that...' NOT 'The founder built ${bName} because...'.",
-    "positioning_statement": "2-3 complete sentences YOU (as the brand) would say out loud to a customer, written from the brand's first-person voice ('we'). Must reference the actual offering interpreted into clean prose. No raw quiz text, no trailing ellipses, no 'they've tried everything' fragments.",
-    "core_message": "One powerful complete sentence. The thing ${bName} keeps coming back to. A manifesto line that would feel at home on a wall. Must connect to what the brand actually does.",
-    "voice_principles": ["Exactly 5 specific, active voice instructions that are unique to ${bName}'s tone AND industry. Not 'be authentic' — more like 'Write like you're teaching someone to slow down without telling them to slow down'. Each principle should be 10-20 words and form a complete instruction."],
-    "differentiation": "2-3 complete paragraphs written in SECOND PERSON to the brand owner ('your edge is...', 'what you refuse to do...'). Interpret the raw quiz input about what makes them different and rewrite it into strategic, specific prose. Name the product/service category and explain why this approach matters in that specific market. Every sentence must be complete.",
-    "audience_insight": "2-3 complete paragraphs on the psychology of YOUR ideal customer. Write about the customer in third person ('they', 'your customer'), but address the brand owner in second person. INTERPRET the raw customer description — do not paste it in. If the owner was vague, use your expertise to define a sharp, specific customer psychology anyway. What are they searching for? What frustration brought them here? What do they want to believe about themselves?",
-    "what_to_stop": "One specific, concrete thing YOU should stop doing this week. Written in second person ('Stop writing copy that...'). Tailored to your specific type of business. Complete, actionable, and never trailing off.",
-    "what_to_start": "One specific, concrete thing YOU should start doing in the next 7 days. Written in second person ('This week, write one post about...'). Tailored to your specific type of business. Complete and actionable."
-  },
+    "archetype_name": "A specific, evocative archetype invented for ${bName}. NOT generic like 'The Hero'. e.g. 'The Quiet Radical', 'The Ritual Keeper'.",
+    "archetype_description": "3-4 complete sentences in second person ('you built...', '${bName} operates like...'). Explain why this archetype fits. Interpret the origin and product into polished prose.",
+    "positioning_statement": "2-3 complete sentences in the brand's first-person voice ('we'). References the actual offering. No raw quiz text.",
+    "core_message": "One powerful complete sentence. A manifesto line that fits ${bName}.",
+    "voice_principles": ["Exactly 5 specific, active voice instructions unique to ${bName}'s tone and industry. Each 10-20 words, complete instruction."],
+    "differentiation": "2 complete paragraphs in second person. Interpret what makes ${bName} different and rewrite into strategic prose. Name the product category and explain why this approach matters in that market.",
+    "audience_insight": "2 complete paragraphs on the psychology of the ideal customer. Interpret the raw description into sharp insight. What are they searching for? What brought them here?",
+    "what_to_stop": "One specific, complete action to stop this week. Second person. Tailored to the business type.",
+    "what_to_start": "One specific, complete action to start in the next 7 days. Second person. Tailored to the business type."
+  }
+}`;
 
+  // ─── SECTION 2: CASE STUDY ───
+  const caseStudyUser=`${quizInput}
+
+Write a magazine-style strategy case study about ${bName}. This is a deep editorial dive — think Harvard Business Review meets The Atlantic.
+
+Return ONLY valid JSON with this exact shape (no backticks, no preamble):
+
+{
   "case_study": {
-    "title": "A compelling editorial headline about ${bName}. Written like it belongs in a strategy publication. Use the brand name and reference their industry. Complete, not truncated.",
-    "section_headers": ["A cultural/industry observation header specific to ${bName}'s sector", "A header about ${bName}'s specific approach to their product/service", "A header about why this compounds over time"],
-    "cultural_hook": "3-4 complete paragraphs written as a magazine feature. Open with a big cultural or industry observation SPECIFIC to ${bName}'s sector, then narrow to why this brand matters. Reference real trends in the industry. Address the brand owner in second person where natural. Include a blockquote. Each paragraph must be 3-5 COMPLETE sentences. Separate paragraphs with \\n\\n. Never leave a sentence trailing with an ellipsis.",
-    "brand_analysis": "4-5 complete paragraphs doing a deep analytical dive into ${bName}'s brand storytelling, positioning, and strategy. Written in second person to the brand owner where natural (e.g. 'What you're doing differently is...'). INTERPRET the origin story, values, and customer description into polished prose — never quote raw quiz text. Include a blockquote. Each paragraph must be complete. Separate paragraphs with \\n\\n.",
-    "growth_implication": "2-3 complete paragraphs on why ${bName}'s approach compounds over time. Address the owner in second person. Be specific about the mechanisms relevant to THIS type of business — word of mouth, loyalty, pricing power, cultural relevance. End with a 'positioning lesson' specific to ${bName} and the industry. Separate paragraphs with \\n\\n."
-  },
+    "title": "A compelling editorial headline about ${bName}. Belongs in a strategy publication. References the industry.",
+    "section_headers": ["A cultural/industry observation header", "A header about ${bName}'s specific approach", "A header about why this compounds over time"],
+    "cultural_hook": "3 complete paragraphs as a magazine feature. Open with a big cultural/industry observation SPECIFIC to ${bName}'s sector, then narrow to why ${bName} matters. Include a blockquote (as a standalone line in quotes). Each paragraph 3-4 complete sentences. Separate paragraphs with \\n\\n.",
+    "brand_analysis": "3 complete paragraphs doing a deep analytical dive into ${bName}'s positioning and strategy. Second person where natural. Interpret the origin/values/customer into polished prose. Include a blockquote. Separate paragraphs with \\n\\n.",
+    "growth_implication": "2 complete paragraphs on why ${bName}'s approach compounds. Address the owner in second person. Be specific about word of mouth, loyalty, pricing power, cultural relevance — whichever is most relevant to the business. End with a positioning lesson specific to ${bName}. Separate paragraphs with \\n\\n."
+  }
+}`;
 
+  // ─── SECTION 3: CONTENT STRATEGY ───
+  const contentStrategyUser=`${quizInput}
+
+Write a content strategy for ${bName} with 3 pillars and 5 complete, ready-to-use posts.
+
+Return ONLY valid JSON with this exact shape (no backticks, no preamble):
+
+{
   "content_strategy": {
-    "pillars": ["Exactly 3 content pillars as memorable, specific phrases that only make sense for ${bName}'s specific brand and product/service. Not generic 'behind the scenes' — reference their actual offering. e.g. for a skincare brand: 'The 6AM formulation sessions nobody asked to see'. For a consultancy: 'The frameworks we give away that others charge for'. Each pillar is a complete phrase."],
+    "pillars": ["Exactly 3 content pillars as memorable, specific phrases that only make sense for ${bName}. Reference the actual offering. e.g. for skincare: 'The 6AM formulation sessions nobody asked to see'. Each is a complete phrase."],
     "posts": [
       {
         "platform": "Instagram Caption",
-        "post": "A complete, ready-to-post Instagram caption (150-250 words) written from ${bName}'s own first-person voice ('we'). Reference the SPECIFIC product/service — mention what the brand actually sells or does, interpreted into natural prose. Include line breaks for readability. End with something that invites engagement without begging for it. Every sentence must be complete.",
-        "why_it_works": "2-3 complete sentences explaining the strategic choice behind this post and why it works for this type of business."
+        "post": "A complete Instagram caption (120-180 words) in ${bName}'s first-person voice ('we'). References the specific product/service interpreted into natural prose. Line breaks for readability. Every sentence complete.",
+        "why_it_works": "2 complete sentences on the strategic choice."
       },
       {
         "platform": "LinkedIn Post",
-        "post": "A complete LinkedIn post (200-350 words) with a strong opening hook, a point of view about the SPECIFIC industry, and a personal insight written from the brand owner's first-person perspective ('I'). Do not name the owner. Reference the actual product/service category interpreted into polished prose. Every sentence complete.",
-        "why_it_works": "2-3 complete sentences on why this works for LinkedIn and this specific industry."
+        "post": "A complete LinkedIn post (180-280 words) with a strong hook and a point of view about the specific industry. Written in the brand owner's first-person voice ('I'). Do not name the owner. Every sentence complete.",
+        "why_it_works": "2 complete sentences on why this works for LinkedIn and this industry."
       },
       {
         "platform": "Short-form Video Hook",
-        "post": "The opening 3-5 complete lines of a Reel or TikTok script. Must stop the scroll. Written for ${bName}'s SPECIFIC product/service — reference what the brand sells or does in polished prose. Include a visual direction note in [brackets] relevant to the business. Then 2-3 more complete lines continuing the script. No trailing fragments.",
-        "why_it_works": "2-3 complete sentences on why this hook pattern works for this type of content."
+        "post": "The opening 4-5 complete lines of a Reel/TikTok script. Must stop the scroll. References ${bName}'s specific product/service. Include visual direction notes in [brackets]. Every line complete.",
+        "why_it_works": "2 complete sentences on why this hook works."
       },
       {
         "platform": "Email Subject Lines",
-        "post": "Exactly 5 email subject lines for ${bName}. Each with a different angle: curiosity, vulnerability, boldness, specificity, and warmth. Label them: Curiosity / Vulnerability / Boldness / Specificity / Warmth. Each must be complete and reference or connect to the actual product/service. Each on its own line.",
-        "why_it_works": "2-3 complete sentences on the psychology behind these subject line choices for this audience."
+        "post": "Exactly 5 email subject lines on separate lines, each labeled and complete: 'Curiosity: ...', 'Vulnerability: ...', 'Boldness: ...', 'Specificity: ...', 'Warmth: ...'. Each complete, each references the product/service.",
+        "why_it_works": "2 complete sentences on the psychology behind these choices."
       },
       {
         "platform": "Unexpected Touchpoint",
-        "post": "A complete piece of copy for an unexpected brand touchpoint — pick the one MOST relevant to ${bName}'s specific business type (packaging insert for product brands, onboarding email for service brands, 404 page for digital brands, etc.). Write the full copy referencing the actual offering. Every sentence complete.",
-        "why_it_works": "2-3 complete sentences on why this specific touchpoint matters for this type of business."
+        "post": "Complete copy for the unexpected brand touchpoint most relevant to ${bName} (packaging insert for product brands, onboarding email for service brands, 404 page for digital brands, etc.). Every sentence complete.",
+        "why_it_works": "2 complete sentences on why this touchpoint matters for this business type."
       }
     ]
   }
 }`;
 
-  return {system, user};
+  return {
+    playbook:{system:baseSystem, user:playbookUser},
+    caseStudy:{system:baseSystem, user:caseStudyUser},
+    contentStrategy:{system:baseSystem, user:contentStrategyUser}
+  };
 }
 
 function displayResults(d){
