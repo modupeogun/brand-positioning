@@ -676,8 +676,8 @@ textarea::placeholder,input::placeholder{color:var(--text-faint);}
     <h2 class="eg-title">Where should we send your<br><em>brand story</em>?</h2>
     <p class="eg-sub">Your full playbook, growth case study, and content strategy are ready. Drop your details and we'll deliver everything straight to you.</p>
     <div class="email-fields">
-      <label for="u-name" style="font-size:12px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:var(--text-muted);margin-bottom:-6px;">Your first name</label>
-      <input type="text" id="u-name" placeholder="e.g. Modupe">
+      <label for="u-name" style="font-size:12px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:var(--text-muted);margin-bottom:-6px;">Your full name</label>
+      <input type="text" id="u-name" placeholder="e.g. Modupe Ogundare">
       <label for="b-name" style="font-size:12px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:var(--red);margin-bottom:-6px;">Your brand name (not your surname)</label>
       <input type="text" id="b-name" placeholder="e.g. Cafftender, Oríkì, Nike">
       <label for="u-email" style="font-size:12px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:var(--text-muted);margin-bottom:-6px;">Your email address</label>
@@ -938,27 +938,52 @@ function buildPrompt(){
 
 You MUST return ONLY valid JSON. No markdown, no backticks, no preamble, no commentary outside the JSON object.
 
-CRITICAL RULES:
-- The brand is called "${bName}". Use "${bName}" by name throughout. NEVER use the founder's name "${uName}" as the brand name.
-- Every single piece of output must be SPECIFIC to ${bName} based on the answers below. If you could swap in another brand's name and the advice would still work, it's too generic. Rewrite it.
-- Reference their actual products/services, their actual customers, their actual origin story, their actual values. Use the EXACT details they gave you — quote their words back to them where powerful.
-- The brand description says: "${quizBrand}" — use this to understand what TYPE of product/service/brand this is. Tailor every recommendation to this specific industry, business model, and offering. A skincare brand gets different advice than a consultancy. A food brand gets different content than a tech startup.
-- Write with personality. Be vivid. Be opinionated. Give them language they'd screenshot and send to their team.
-- Never use filler phrases like "In today's competitive landscape" or "In the modern marketplace." Start with something specific to ${bName}.
-- In the content strategy posts, reference the SPECIFIC type of product/service ${bName} offers. If they sell skincare, mention ingredients or routines. If they're a consultancy, reference client transformations. If they sell food, talk about taste, sourcing, preparation. Make it unmistakably about THEIR business.`;
+═══ VOICE & PERSPECTIVE (NON-NEGOTIABLE) ═══
+- Write in SECOND PERSON throughout. Say "you", "your brand", "your customer". You are speaking directly to the brand owner.
+- NEVER refer to them in the third person. Do NOT say "the founder", "the owner", "the brand owner", "they", "she", or "he". If you catch yourself writing "the founder struggled with..." rewrite it as "you struggled with..." or "your brand was born out of...".
+- NEVER say things like "based on what you told us" or "from your quiz answers". That breaks the spell. Just state the insight directly, as if it's obvious truth.
+- The brand is called "${bName}". Use "${bName}" when referring to the brand as an entity (e.g. "${bName} operates like...", "what ${bName} stands for"). Use "you/your" when addressing the owner directly.
+- NEVER use the owner's name "${uName}" as the brand name. NEVER use "${uName}" at all in the output — always address them as "you".
 
-  const user=`BRAND QUIZ ANSWERS FOR ${bName}:
-1. Brand & what it does: ${quizBrand}
-2. Their ideal customer (in their own words): ${a.customer_truth||'not provided'}
-3. The transformation they deliver: ${a.transformation||'not provided'}
-4. Why this brand exists (origin story): ${a.origin||'not provided'}
-5. Their unique edge / what they refuse to compromise: ${a.difference||'not provided'}
-6. The feeling they want people to have first: ${a.content_feeling||'not provided'}
-7. Brand values they say are genuinely true: ${Array.isArray(a.brand_values)?a.brand_values.join('; '):'not provided'}
-8. Their natural communication style: ${a.brand_tone||'not provided'}
-9. Content vulnerability comfort level: ${a.content_comfort||'not provided'}/10 (1=very curated, 10=raw and unfiltered)
-10. 5-year ambition: ${a.ambition||'not provided'}
-Founder's first name: ${uName}
+═══ INTERPRETATION (CRITICAL) ═══
+- DO NOT quote the quiz answers verbatim. The quiz input is raw, often incomplete, sometimes badly phrased. Your job is to INTERPRET it, extract the substance, and rewrite it into polished, natural prose.
+- NEVER paste a quiz answer directly into a sentence where the grammar doesn't flow. If the answer doesn't fit the sentence, rewrite the sentence OR rewrite the quiz answer into a clean phrase.
+- EVERY sentence you write must be complete, grammatical, and meaningful. No trailing ellipses. No dangling clauses. No "..." to indicate missing text. If you don't have enough material for a sentence, write a different sentence that you DO have material for.
+- If a quiz answer is vague, generic, incomplete, or unhelpful, USE YOUR EXPERTISE to infer what the brand probably means and give confident, specific guidance anyway. You are the strategist — they are paying you to know things they don't yet know about themselves.
+- If a quiz answer is missing entirely, work from the brand description and what you can reasonably infer about their industry, product, and positioning. NEVER say "not provided" or leave blanks.
+- Example of WRONG: "${bName} exists for they've tried everything." ← raw quiz text slapped in.
+- Example of RIGHT: "${bName} exists for people who have tried everything else and are ready for something that actually works." ← interpreted and rewritten into natural prose.
+- Example of WRONG: "You struggled with sensitive skin for..."
+- Example of RIGHT: "You started this because you lived the problem yourself — years of sensitive skin, years of products that promised gentleness and delivered irritation."
+
+═══ SPECIFICITY ═══
+- Every single piece of output must be SPECIFIC to ${bName}. If you could swap in another brand's name and the advice would still work, it's too generic. Rewrite it.
+- Reference their actual products/services, their actual customers, their actual origin story, their actual values — but INTERPRETED into polished prose, never pasted in raw.
+- The brand description is: "${quizBrand}" — use this to understand what TYPE of product/service/brand this is. Tailor every recommendation to this specific industry, business model, and offering. A skincare brand gets different advice than a consultancy. A food brand gets different content than a tech startup.
+- Write with personality. Be vivid. Be opinionated. Give them language they'd screenshot and send to their team.
+- Never use filler phrases like "In today's competitive landscape" or "In the modern marketplace."
+- In the content strategy posts, reference the SPECIFIC type of product/service ${bName} offers. If skincare, mention ingredients, routines, skin types. If consultancy, reference client transformations, frameworks. If food, talk about taste, sourcing, preparation. Make it unmistakably about THIS business.
+
+═══ HANDLING VAGUE OR INCOMPLETE ANSWERS ═══
+- If the customer description is vague ("not sure who my customer is"), don't say so in the output. Use the brand description and your expertise to define a likely ideal customer profile for this type of business, then guide them toward it with confidence.
+- If the origin story is thin, lean on the brand description and product category to reconstruct a plausible, emotionally resonant reason the brand exists.
+- If values, transformation, or ambition are missing or generic, infer strong, specific ones that fit the product and positioning.
+- Your job is to GUIDE the user — especially when they seem unsure. Never reflect their uncertainty back at them. Give them a confident point of view they can either adopt or react against.`;
+
+  const user=`RAW QUIZ INPUT FOR ${bName} (you will INTERPRET this, not quote it):
+1. Brand & what it does: ${quizBrand||'(not provided — infer from other answers or treat as a new brand finding its voice)'}
+2. Who their ideal customer is (raw input): ${a.customer_truth||'(not provided — use expert judgment to define a likely ideal customer based on the brand description)'}
+3. The transformation they deliver (raw input): ${a.transformation||'(not provided — infer a plausible, emotionally specific transformation from the product category)'}
+4. Why this brand exists / origin (raw input): ${a.origin||'(not provided — infer a plausible emotional origin based on the brand description and category)'}
+5. Their edge / what they refuse to compromise (raw input): ${a.difference||'(not provided — infer a likely differentiator rooted in their brand description)'}
+6. The feeling they want people to have first: ${a.content_feeling||'(not provided — infer from the brand description)'}
+7. Brand values (raw input): ${Array.isArray(a.brand_values)&&a.brand_values.length?a.brand_values.join('; '):'(not provided — infer from the brand description)'}
+8. Their natural communication style: ${a.brand_tone||'(not provided — infer a fitting voice)'}
+9. Content vulnerability comfort level: ${a.content_comfort||'5'}/10 (1=very curated, 10=raw and unfiltered)
+10. 5-year ambition (raw input): ${a.ambition||'(not provided — infer an ambitious but plausible vision)'}
+Owner's full name (for internal reference only — DO NOT use in output): ${uName}
+
+REMINDER: The text above is RAW QUIZ INPUT. Do not paste it verbatim into your output. Read it, understand it, then REWRITE it into polished, natural, second-person prose. Every sentence in your output must be complete and grammatical. Never use ellipses to indicate missing information. Never say "the founder" — always "you".
 
 STEP 1 — Assign a storytelling model (use it to shape everything, but never name it to the user):
 SOLITUDE — still, poetic, inward. Power from depth and introspection.
@@ -977,52 +1002,52 @@ Return ONLY valid JSON (no backticks, no preamble, no markdown wrapping):
   "subline": "One vivid sentence capturing ${bName}'s brand story essence. Reference their actual product/service and positioning. Not generic.",
 
   "playbook": {
-    "archetype_name": "A specific, evocative archetype name. NOT generic names like 'The Hero' or 'The Visionary'. Make it feel like it was invented for ${bName} based on what they actually do and sell. e.g. 'The Quiet Radical', 'The Ritual Keeper', 'The Reluctant Expert'",
-    "archetype_description": "3-4 sentences explaining why this archetype fits ${bName} specifically. Reference their origin, their specific product/service, their values. Mention what they actually sell or do. Make it feel like a mirror.",
-    "positioning_statement": "2-3 sentences they'd actually say out loud to a customer. Written in ${bName}'s voice based on their communication style. Must reference their actual offering. Not corporate. Real.",
-    "core_message": "One powerful line. The thing ${bName} keeps coming back to. This should feel like a manifesto line they'd put on their wall. Must connect to what they actually do.",
-    "voice_principles": ["5 specific, active voice instructions that are unique to ${bName}'s tone AND industry. Not 'be authentic' — more like 'Write like you're teaching someone to slow down without telling them to slow down' or 'Every sentence should feel handmade, never mass-produced'. Each principle should be 10-20 words."],
-    "differentiation": "2-3 paragraphs on ${bName}'s real competitive edge. Reference their specific answers about what makes them different. Name the specific product/service category they're in and explain WHY their approach matters in that specific market. Be strategic and specific.",
-    "audience_insight": "2-3 paragraphs on the deep psychological truth of ${bName}'s customer. Go beyond demographics. Reference the customer description they provided — quote their words. What are they really searching for? What frustration brought them to a brand like ${bName}? What do they want to believe about themselves?",
-    "what_to_stop": "One specific, concrete thing ${bName} should stop doing — tailored to their specific type of business. Not vague. Something they can act on this week.",
-    "what_to_start": "One specific, concrete thing ${bName} should start doing — tailored to their specific type of business. Something they can do in the next 7 days."
+    "archetype_name": "A specific, evocative archetype name invented for ${bName}. NOT generic names like 'The Hero' or 'The Visionary'. e.g. 'The Quiet Radical', 'The Ritual Keeper', 'The Reluctant Expert'.",
+    "archetype_description": "3-4 sentences written in SECOND PERSON addressing the brand owner as 'you'. Explain why this archetype fits YOUR brand specifically. Reference the origin, the specific product/service, the values — but REWRITTEN into polished prose, never quoted raw. Example opener: 'You built ${bName} as a counterweight to an industry that...' NOT 'The founder built ${bName} because...'.",
+    "positioning_statement": "2-3 complete sentences YOU (as the brand) would say out loud to a customer, written from the brand's first-person voice ('we'). Must reference the actual offering interpreted into clean prose. No raw quiz text, no trailing ellipses, no 'they've tried everything' fragments.",
+    "core_message": "One powerful complete sentence. The thing ${bName} keeps coming back to. A manifesto line that would feel at home on a wall. Must connect to what the brand actually does.",
+    "voice_principles": ["Exactly 5 specific, active voice instructions that are unique to ${bName}'s tone AND industry. Not 'be authentic' — more like 'Write like you're teaching someone to slow down without telling them to slow down'. Each principle should be 10-20 words and form a complete instruction."],
+    "differentiation": "2-3 complete paragraphs written in SECOND PERSON to the brand owner ('your edge is...', 'what you refuse to do...'). Interpret the raw quiz input about what makes them different and rewrite it into strategic, specific prose. Name the product/service category and explain why this approach matters in that specific market. Every sentence must be complete.",
+    "audience_insight": "2-3 complete paragraphs on the psychology of YOUR ideal customer. Write about the customer in third person ('they', 'your customer'), but address the brand owner in second person. INTERPRET the raw customer description — do not paste it in. If the owner was vague, use your expertise to define a sharp, specific customer psychology anyway. What are they searching for? What frustration brought them here? What do they want to believe about themselves?",
+    "what_to_stop": "One specific, concrete thing YOU should stop doing this week. Written in second person ('Stop writing copy that...'). Tailored to your specific type of business. Complete, actionable, and never trailing off.",
+    "what_to_start": "One specific, concrete thing YOU should start doing in the next 7 days. Written in second person ('This week, write one post about...'). Tailored to your specific type of business. Complete and actionable."
   },
 
   "case_study": {
-    "title": "A compelling editorial headline about ${bName}. Written like it belongs in a strategy publication. Use the brand name and reference their industry.",
+    "title": "A compelling editorial headline about ${bName}. Written like it belongs in a strategy publication. Use the brand name and reference their industry. Complete, not truncated.",
     "section_headers": ["A cultural/industry observation header specific to ${bName}'s sector", "A header about ${bName}'s specific approach to their product/service", "A header about why this compounds over time"],
-    "cultural_hook": "3-4 paragraphs opening with a big cultural or industry observation SPECIFIC to ${bName}'s sector, then narrowing to why ${bName}'s approach is significant. Reference real trends in their industry. Write editorially — like a magazine feature. Include a blockquote. Each paragraph 3-5 sentences. Separate paragraphs with \\n\\n.",
-    "brand_analysis": "4-5 paragraphs doing a deep analytical dive into ${bName}'s brand storytelling, positioning, and strategy. Reference their specific products/services by name or type, their origin story, their values, their customer. Explain what they're doing right and why it works at a structural level in their specific market. Include a blockquote. Separate paragraphs with \\n\\n.",
-    "growth_implication": "2-3 paragraphs on why ${bName}'s approach compounds over time. Be specific about the mechanisms relevant to THEIR type of business — word of mouth, loyalty, pricing power, cultural relevance. End with a 'positioning lesson' specific to ${bName} and their industry. Separate paragraphs with \\n\\n."
+    "cultural_hook": "3-4 complete paragraphs written as a magazine feature. Open with a big cultural or industry observation SPECIFIC to ${bName}'s sector, then narrow to why this brand matters. Reference real trends in the industry. Address the brand owner in second person where natural. Include a blockquote. Each paragraph must be 3-5 COMPLETE sentences. Separate paragraphs with \\n\\n. Never leave a sentence trailing with an ellipsis.",
+    "brand_analysis": "4-5 complete paragraphs doing a deep analytical dive into ${bName}'s brand storytelling, positioning, and strategy. Written in second person to the brand owner where natural (e.g. 'What you're doing differently is...'). INTERPRET the origin story, values, and customer description into polished prose — never quote raw quiz text. Include a blockquote. Each paragraph must be complete. Separate paragraphs with \\n\\n.",
+    "growth_implication": "2-3 complete paragraphs on why ${bName}'s approach compounds over time. Address the owner in second person. Be specific about the mechanisms relevant to THIS type of business — word of mouth, loyalty, pricing power, cultural relevance. End with a 'positioning lesson' specific to ${bName} and the industry. Separate paragraphs with \\n\\n."
   },
 
   "content_strategy": {
-    "pillars": ["3 content pillars as memorable, specific phrases that only make sense for ${bName}'s specific brand and product/service. Not generic 'behind the scenes' — reference their actual offering. e.g. for a skincare brand: 'The 6AM formulation sessions nobody asked to see'. For a consultancy: 'The frameworks we give away that others charge for'."],
+    "pillars": ["Exactly 3 content pillars as memorable, specific phrases that only make sense for ${bName}'s specific brand and product/service. Not generic 'behind the scenes' — reference their actual offering. e.g. for a skincare brand: 'The 6AM formulation sessions nobody asked to see'. For a consultancy: 'The frameworks we give away that others charge for'. Each pillar is a complete phrase."],
     "posts": [
       {
         "platform": "Instagram Caption",
-        "post": "A complete, ready-to-post Instagram caption (150-250 words) written IN ${bName}'s exact voice. Reference their SPECIFIC product/service — mention what they actually sell or do. Include line breaks for readability. End with something that invites engagement without begging for it.",
-        "why_it_works": "2-3 sentences explaining the strategic choice behind this specific post and why it works for ${bName}'s type of business."
+        "post": "A complete, ready-to-post Instagram caption (150-250 words) written from ${bName}'s own first-person voice ('we'). Reference the SPECIFIC product/service — mention what the brand actually sells or does, interpreted into natural prose. Include line breaks for readability. End with something that invites engagement without begging for it. Every sentence must be complete.",
+        "why_it_works": "2-3 complete sentences explaining the strategic choice behind this post and why it works for this type of business."
       },
       {
         "platform": "LinkedIn Post",
-        "post": "A complete LinkedIn post (200-350 words) with a strong opening hook, a point of view about ${bName}'s SPECIFIC industry, and a personal insight from the founder's perspective. Reference their actual product/service category. Written in ${bName}'s voice.",
-        "why_it_works": "2-3 sentences on why this works for LinkedIn and ${bName}'s specific industry."
+        "post": "A complete LinkedIn post (200-350 words) with a strong opening hook, a point of view about the SPECIFIC industry, and a personal insight written from the brand owner's first-person perspective ('I'). Do not name the owner. Reference the actual product/service category interpreted into polished prose. Every sentence complete.",
+        "why_it_works": "2-3 complete sentences on why this works for LinkedIn and this specific industry."
       },
       {
         "platform": "Short-form Video Hook",
-        "post": "The opening 3-5 lines of a Reel or TikTok script. Must stop the scroll. Written for ${bName}'s SPECIFIC product/service — mention what they sell or do. Include a visual direction note in [brackets] relevant to their business. Then 2-3 more lines continuing the script.",
-        "why_it_works": "2-3 sentences on why this hook pattern works for ${bName}'s type of content."
+        "post": "The opening 3-5 complete lines of a Reel or TikTok script. Must stop the scroll. Written for ${bName}'s SPECIFIC product/service — reference what the brand sells or does in polished prose. Include a visual direction note in [brackets] relevant to the business. Then 2-3 more complete lines continuing the script. No trailing fragments.",
+        "why_it_works": "2-3 complete sentences on why this hook pattern works for this type of content."
       },
       {
         "platform": "Email Subject Lines",
-        "post": "5 email subject lines for ${bName}. Each with a different angle: curiosity, vulnerability, boldness, specificity, and warmth. Label them: Curiosity / Vulnerability / Boldness / Specificity / Warmth. Each must reference or connect to ${bName}'s actual product/service.",
-        "why_it_works": "2-3 sentences on the psychology behind these subject line choices for ${bName}'s audience."
+        "post": "Exactly 5 email subject lines for ${bName}. Each with a different angle: curiosity, vulnerability, boldness, specificity, and warmth. Label them: Curiosity / Vulnerability / Boldness / Specificity / Warmth. Each must be complete and reference or connect to the actual product/service. Each on its own line.",
+        "why_it_works": "2-3 complete sentences on the psychology behind these subject line choices for this audience."
       },
       {
         "platform": "Unexpected Touchpoint",
-        "post": "A piece of copy for an unexpected brand touchpoint — pick the one MOST relevant to ${bName}'s specific business type (packaging insert for product brands, onboarding email for service brands, 404 page for digital brands, etc.). Write the full copy referencing their actual offering.",
-        "why_it_works": "2-3 sentences on why this specific touchpoint matters for ${bName}'s type of business."
+        "post": "A complete piece of copy for an unexpected brand touchpoint — pick the one MOST relevant to ${bName}'s specific business type (packaging insert for product brands, onboarding email for service brands, 404 page for digital brands, etc.). Write the full copy referencing the actual offering. Every sentence complete.",
+        "why_it_works": "2-3 complete sentences on why this specific touchpoint matters for this type of business."
       }
     ]
   }
@@ -1176,66 +1201,63 @@ async function sendToEmailProvider(payload){
 }
 
 function getFallback(){
-  const bi=answers.brand_industry||`${bName} — a brand building something of its own`;
-  const ct=answers.customer_truth||'someone looking for something better';
-  const tr=answers.transformation||'they feel like they found what they were looking for';
-  const og=answers.origin||'a belief that things could be done differently';
-  const df=answers.difference||'an uncompromising approach to quality';
+  // Fallback used only if the AI API fails. Zero truncation, zero raw quiz
+  // interpolation mid-sentence — every sentence stands on its own and makes
+  // sense regardless of what the user typed. Brand name is the only variable
+  // spliced into sentences. Archetype varies by "feeling" answer for variety.
+  const feeling=answers.content_feeling||'';
+  const comfort=Number(answers.content_comfort)||5;
   const vals=Array.isArray(answers.brand_values)&&answers.brand_values.length?answers.brand_values:[];
-  const feeling=answers.content_feeling||'seen and understood';
-  const tone=answers.brand_tone||'warm, perceptive, grounded';
-  const comfort=answers.content_comfort||5;
-  const ambition=answers.ambition||'to become the brand people quietly trust above the rest';
-  // Pick an archetype based on the feeling they chose — gives variety across users
   const archetypes={
-    'Seen and understood':{name:'The Quiet Witness',model:'Solitude'},
-    'Quietly inspired':{name:'The Slow Spark',model:'Ritual'},
-    'Part of something':{name:'The Gatekeeper of Belonging',model:'Community'},
-    'Curious and energised':{name:'The Restless Guide',model:'Serial'}
+    'Seen and understood':{name:'The Quiet Witness',model:'Solitude',headline:'The Brand That Refuses to Shout'},
+    'Quietly inspired':{name:'The Slow Spark',model:'Ritual',headline:'Why the Slow Way Wins'},
+    'Part of something':{name:'The Gatekeeper of Belonging',model:'Community',headline:'Built for the Ones Who Already Get It'},
+    'Curious and energised':{name:'The Restless Guide',model:'Serial',headline:'The Brand That Keeps Unfolding'}
   };
-  const arc=archetypes[feeling]||{name:'The Deliberate Contrarian',model:'Conviction'};
-  const valuesLine=vals.length?`Their own words say it: "${vals[0]}"${vals[1]?`, and "${vals[1]}"`:''}.`:'Their values are felt more than stated.';
-  const voiceLine=comfort>=7?'raw and unfiltered':comfort>=4?'considered but honest':'curated and controlled';
+  const arc=archetypes[feeling]||{name:'The Deliberate Contrarian',model:'Conviction',headline:'The Story Worth Telling'};
+  const voiceRegister=comfort>=7?'raw and unfiltered':comfort>=4?'considered but personal':'curated and controlled';
+  const coreMessage=vals[0]||"We'd rather be trusted than trending.";
+
   return{
     storytelling_model:arc.model,
-    headline:`${bName} — ${arc.name=='The Quiet Witness'?'The Brand That Refuses to Shout':arc.name=='The Slow Spark'?'Why The Slow Way Wins':arc.name=='The Gatekeeper of Belonging'?'Built For The Ones Who Already Get It':arc.name=='The Restless Guide'?'The Brand That Keeps Unfolding':'The Story Worth Telling'}`,
-    subline:`${bi.split('.')[0]}. Here's how to make sure the right people find it — and stay.`,
+    headline:`${bName} — ${arc.headline}`,
+    subline:`A brand built on something real. Here is how to make sure the right people find it and stay.`,
     playbook:{
       archetype_name:arc.name,
-      archetype_description:`${bName} operates like ${arc.name.toLowerCase()} — and based on what you told us, that's not a pose, it's a posture. ${og.slice(0,200)}${og.length>200?'...':''} That origin shapes everything: the way ${bName} shows up, the kind of customer it attracts, and the things it refuses to do. The archetype fits because ${bName} isn't trying to be everything to everyone — it's trying to be the right thing for a specific kind of person.`,
-      positioning_statement:`${bName} exists for ${ct.slice(0,140)}${ct.length>140?'...':''} We built this because ${og.slice(0,140)}${og.length>140?'...':''} — and we do it the way we do because ${df.slice(0,120)}${df.length>120?'...':''}`,
-      core_message:vals[0]||`We'd rather be trusted than trending.`,
+      archetype_description:`${bName} operates like ${arc.name.toLowerCase()}. That is not a marketing posture — it is the way you naturally show up in your category, and it is the thing your best customers will come to recognise you by. Your job is not to invent a personality for ${bName}. It is to protect the one that already exists and let it shape every decision you make, from the products you build to the words you choose.`,
+      positioning_statement:`${bName} is for people who are tired of being sold a version of something that never quite fits. We make the quieter, more considered choice — and we do it because the other way is not worth doing. If that sounds like you, you are in the right place.`,
+      core_message:coreMessage,
       voice_principles:[
-        `Write in a ${voiceLine} register — your comfort level (${comfort}/10) should shape every sentence`,
-        `Sound like ${tone.split(',')[0].replace(/^The /,'').toLowerCase()} — that's the voice your customer already trusts`,
-        `Reference the specific thing you do differently: ${df.slice(0,80)}${df.length>80?'...':''} — let that detail do the talking`,
-        `Speak to the person described here by name: ${ct.slice(0,80)}${ct.length>80?'...':''}`,
-        `Make every piece feel like it could only have come from ${bName} — if a competitor could have posted it, rewrite`
+        `Write in a ${voiceRegister} register — let it shape the rhythm of every sentence you publish.`,
+        `Sound like the kind of brand that has nothing to prove. Earned confidence, never performed.`,
+        `Say the specific thing, not the safe thing. Specificity is what makes a reader trust you.`,
+        `Make the reader feel seen before you mention yourself, your product, or your offer.`,
+        `If a competitor could have posted the exact same sentence, rewrite it. Make it unmistakably ${bName}.`
       ],
-      differentiation:`Most brands in ${bName}'s space are chasing volume. You told us your edge is different: ${df}\n\nThat's not a tagline — it's a structural advantage. When the thing you won't compromise on becomes visible in every customer interaction, you stop having to explain why you cost more, move slower, or refuse certain work. The proof lives in the product.\n\nThe ${bName} customer isn't comparing you on price — they're comparing you on trust. And trust only compounds when the thing you promised is the thing you deliver, every time.`,
-      audience_insight:`The person you described — "${ct}" — is not a demographic. They're a psychology. They've been let down by brands that said the right things and did the convenient ones. They're exhausted by performance.\n\nWhen they find ${bName}, what they feel is relief. The transformation you named — "${tr}" — is the real product. Everything else is the packaging.\n\nThis is why they'll pay more, wait longer, and recommend you unprompted. You're not a purchase for them. You're confirmation that their instincts were right.`,
-      what_to_stop:`Stop trying to explain ${bName} in under 10 seconds. The people who need a 10-second pitch were never going to buy. The ones you actually want are willing to read, listen, and consider. Write for them — the longer, quieter, more specific version.`,
-      what_to_start:`This week, publish one piece that references "${og.slice(0,80)}${og.length>80?'...':''}" in plain language. Don't frame it as marketing. Frame it as the honest reason ${bName} exists. That's the post your ideal customer will screenshot and send to a friend.`
+      differentiation:`Most brands in your space are competing on the things that are easiest to measure: price, speed, features, reach. ${bName} is competing on something harder to fake — the quality of the decisions nobody sees. That is a slower game, but it is also a stickier one.\n\nWhen your standards are visible in every customer interaction, you stop having to explain why you cost more, move slower, or refuse certain work. The work itself becomes the argument. People stop price-comparing you and start trusting you.\n\nThat trust is your real competitive advantage. It does not show up on a spreadsheet, but it shows up in repeat purchases, in word of mouth, in the way people describe ${bName} to a friend. It compounds every year you keep doing the same hard thing the same honest way.`,
+      audience_insight:`Your customer is not a demographic. They are a psychology. They have been let down by brands that said the right things and did the convenient ones, and they have developed a radar for the difference. When they find a brand that feels real, they hold on.\n\nWhat they are buying from ${bName} is not just the product or service. It is relief. Relief that they finally found someone who pays attention to the things they also care about. Relief that they do not have to keep searching. Relief that their instincts were right all along.\n\nThis is why they will pay more, wait longer, and recommend you unprompted. You are not a purchase to them — you are confirmation that the way they already thought about things is the way things should be.`,
+      what_to_stop:`Stop trying to explain ${bName} in under 10 seconds. The people who need a 10-second pitch were never going to buy anyway. The ones you actually want are willing to read, listen, and consider. Write for them — the longer, quieter, more specific version. Let the short-attention audience self-select out.`,
+      what_to_start:`This week, publish one piece of content that explains the honest reason ${bName} exists — not the marketing version, the real version. Do not frame it as promotion. Frame it as a letter to the kind of person you built this for. That is the post your ideal customer will screenshot and send to a friend.`
     },
     case_study:{
-      title:`${bName}: Why ${vals[0]?`"${vals[0].slice(0,50)}"`:`The Slow Way`} Is A Strategy`,
-      section_headers:[`The Noise Problem In ${bi.split(' ').slice(0,4).join(' ')||'Your Space'}`,`What ${bName} Is Actually Selling`,`Why This Compounds Over Time`],
-      cultural_hook:`Every category eventually turns into noise. The louder it gets, the more valuable quiet becomes. We're watching this happen across industries — from skincare to software to hospitality — and the pattern is always the same: the brands that outlast a hype cycle aren't the ones that outspent it. They're the ones that had a reason for existing beyond the market opportunity.\n\n${bName} is one of those brands. You told us why it exists — "${og.slice(0,200)}${og.length>200?'...':''}" — and that's not a backstory, that's a moat.\n\n"The brands that survive aren't the loudest. They're the ones that gave people a reason to listen — and then kept giving them reasons to stay."\n\nThis is the position ${bName} is quietly claiming.`,
-      brand_analysis:`The ${bName} approach is deliberate. Most brands in the same space would describe what they do. You told us what you believe: ${valuesLine}\n\nThat's a structural difference. When your values are specific enough to guide real decisions — who you work with, what you refuse to sell, how you speak — they stop being words on a page and become an operating system. It shows up in the details: ${df}\n\nThe customer who finds ${bName} isn't comparing features. They're looking for someone who understands what they actually want. You described them: "${ct.slice(0,200)}${ct.length>200?'...':''}" That's a person who's been paying attention. And when they find a brand that has been paying attention back, the relationship skips the transactional stage entirely.\n\n"When your brand exists because of conviction rather than opportunity, the story tells itself. ${bName} isn't manufacturing a narrative — it's living one."`,
-      growth_implication:`Here's what compounds for ${bName}: every customer who experiences the transformation you described — "${tr.slice(0,180)}${tr.length>180?'...':''}" — becomes a storyteller. Not because you asked. Because recommending ${bName} says something about them too.\n\nThat's the quietest, most powerful growth engine there is. It doesn't require ad spend. It doesn't require going viral. It requires being so specific, so consistent, and so trustworthy that your customers feel a small ownership over your success.\n\nThe positioning lesson for ${bName}: Your 5-year ambition — "${ambition.slice(0,180)}${ambition.length>180?'...':''}" — won't be reached by reaching more people. It'll be reached by going deeper with the right ones. Scale the depth, not the audience. The growth follows.`
+      title:`${bName}: Why the Slow Way Is a Strategy`,
+      section_headers:[`The Noise Problem Nobody Wants to Solve`,`What ${bName} Is Actually Selling`,`Why This Compounds Over Time`],
+      cultural_hook:`Every category eventually turns into noise. The louder it gets, the more valuable quiet becomes. We are watching this happen across industries right now — from skincare to software to hospitality — and the pattern is always the same. The brands that outlast a hype cycle are not the ones that outspent it. They are the ones that had a reason for existing beyond the market opportunity.\n\n${bName} is one of those brands. You did not start this to ride a trend. You started it because something specific needed to exist, and you were willing to be the one to build it. That is not a backstory. That is a moat.\n\n"The brands that survive are not the loudest. They are the ones that gave people a reason to listen — and then kept giving them reasons to stay."\n\nThat is the position ${bName} is quietly claiming, whether you have framed it that way or not.`,
+      brand_analysis:`The ${bName} approach is deliberate, and that deliberation is your edge. Most brands in the same space spend their energy describing what they do. You are doing something harder and more valuable — you are showing what you believe, and letting the work prove it.\n\nThat is a structural difference, not a surface one. When your values are specific enough to guide real decisions — who you work with, what you refuse to sell, how you communicate — they stop being words on a page and start operating like an internal compass. You do not have to remember to be on-brand. You just do the work the way you would have done it anyway, and the brand takes care of itself.\n\nThe customer who finds ${bName} is not comparing features with a spreadsheet. They are looking for a brand that understands something they have always felt but never quite articulated. When they find one, they become an advocate — not because you asked, but because recommending ${bName} is a way of describing themselves.\n\n"When your brand exists because of conviction rather than opportunity, the story tells itself. ${bName} is not manufacturing a narrative — it is living one."`,
+      growth_implication:`Here is what compounds for ${bName}: every customer who has a genuine experience with you becomes a quiet storyteller. Not because you asked. Because recommending ${bName} to someone they care about is a way of sharing a small secret. That is the most powerful growth engine there is, and you cannot buy it with ad spend.\n\nThe question for you is not "how do we reach more people?" The question is "how do we make every person who finds us feel like they discovered something?" The answer to that question is the answer to your growth strategy. Every piece of content, every product decision, every email you send should make a new customer feel that way.\n\nThe positioning lesson for ${bName}: you will not reach your long-term ambition by reaching more people. You will reach it by going deeper with the right ones. Scale the depth of the relationship. The width follows on its own.`
     },
     content_strategy:{
       pillars:[
-        `The ${bName} Method — showing the specific thing you do that others don't`,
-        `The Honest Backstory — why ${bName} exists, told in pieces`,
-        `Truths Your Customer Already Feels — content that validates, not persuades`
+        `The ${bName} Method — showing the specific decisions that make your work different.`,
+        `The Honest Backstory — the real reasons ${bName} exists, told in small pieces over time.`,
+        `Truths Your Customer Already Feels — content that validates their instincts instead of trying to change them.`
       ],
       posts:[
-        {platform:"Instagram Caption",post:`Here's the thing about ${bName}:\n\n${df.slice(0,200)}${df.length>200?'...':''}\n\nWe didn't do it that way because it was easier. We did it because the other way didn't feel right.\n\nAnd if you've ever wondered why some brands feel different — it's usually that. A series of small decisions nobody saw, that ended up being the whole thing.\n\n— ${bName}`,why_it_works:`Opens with specificity (the differentiator you named), then zooms out to a universal truth. It doesn't sell — it describes. The customer you told us about ("${ct.slice(0,60)}...") is exactly the person who'll screenshot this.`},
-        {platform:"LinkedIn Post",post:`I'll tell you why I started ${bName}.\n\n${og.slice(0,300)}${og.length>300?'...':''}\n\nAt the time, it didn't feel like a brand decision. It felt like the only thing I could do. I think that's how most of the brands I admire started — not with a market opportunity, but with an itch the founder couldn't leave alone.\n\n${bName} is still that. And the people who find us tend to be the ones who recognise the feeling.`,why_it_works:`LinkedIn rewards founder honesty over polish. This post uses your real origin story as the entire content — no filler, no call to action. The "itch the founder couldn't leave alone" framing is universal enough to resonate, specific enough to feel real.`},
-        {platform:"Short-form Video Hook",post:`[Close-up, no face]\n"People ask what ${bName} does."\n\n[Cut wider]\n"Here's the shorter answer: ${tr.slice(0,100)}${tr.length>100?'...':''}"\n\n[Cut to process/product detail]\n"The longer answer is the reason it actually works."`,why_it_works:`Hooks on the promise (transformation), then immediately pivots to the thing that earns the promise (the process). Short-form video rewards this structure: stop the scroll, then give them a reason to stay.`},
-        {platform:"Email Subject Lines",post:`Curiosity: "${vals[0]?vals[0].slice(0,50):"The one thing we won't do"}"\nVulnerability: "Why I almost didn't start ${bName}"\nBoldness: "${bName} isn't for everyone — here's how to tell"\nSpecificity: "${df.slice(0,55)}${df.length>55?'...':''}"\nWarmth: "For the person who's been looking for this"`,why_it_works:`Each line pulls directly from what you told us — your values, your origin, your difference. That's why they'll outperform generic subject lines: they're the language your customer already wants to hear.`},
-        {platform:"Unexpected Touchpoint",post:`On the order confirmation / welcome page:\n\n"Before anything else — thank you.\n\nYou chose ${bName} when you had other options. That's not lost on us.\n\nHere's what happens next: ${tr.slice(0,150)}${tr.length>150?'...':''}\n\nWe'll be in touch. But mostly, we'll let the thing speak for itself.\n\n— The ${bName} team"`,why_it_works:`Most brands waste the confirmation moment on logistics. ${bName} uses it to re-affirm the transformation the customer is buying into. Small moment, disproportionate emotional impact.`}
+        {platform:"Instagram Caption",post:`Here is the thing about ${bName}.\n\nWe did not build it to be the loudest option, or the cheapest, or the fastest. We built it to be the one you would still recommend a year from now without hesitating.\n\nThat is a different kind of ambition. Slower. Quieter. Harder to measure in week-one metrics.\n\nBut if you have ever wondered why some brands feel different from the rest, it is usually this — a series of small, honest decisions nobody ever saw, that ended up being the whole thing.\n\nWe are just trying to get those decisions right. One at a time.\n\n— The team at ${bName}`,why_it_works:`This caption does not sell. It describes. It trades short-term conversion for long-term loyalty by speaking directly to the customer psychology that actually buys from a brand like yours — the kind who wants a reason to believe, not a reason to buy today.`},
+        {platform:"LinkedIn Post",post:`I want to tell you something honest about starting ${bName}.\n\nI did not start it because I saw a market opportunity. I started it because I was looking for something that did not exist, and eventually I got tired of waiting for someone else to build it.\n\nAt the time, it did not feel like a brand decision. It felt like the only thing I could do. And I think that is how most of the brands I admire actually started — not with a business plan, but with an itch the founder could not leave alone.\n\n${bName} is still that. Every product, every decision, every conversation with a customer traces back to the same original question: what would it look like if someone actually cared about getting this right?\n\nThe people who find us tend to be the ones who recognise the feeling.`,why_it_works:`LinkedIn rewards founder honesty over corporate polish. This post uses first-person reflection to build trust, then quietly connects the personal story to the brand's positioning. The closing line invites the reader to self-identify as someone who belongs with ${bName}.`},
+        {platform:"Short-form Video Hook",post:`[Close-up, hands working, no face on camera yet]\n"People ask what ${bName} does."\n\n[Cut wider, still no face]\n"The shorter answer is: we make the thing we wish already existed."\n\n[Cut to a product or process detail]\n"The longer answer is the reason it actually works — and it starts with a decision most brands in our space refuse to make."`,why_it_works:`This hook pattern opens on intrigue, not explanation. By withholding the face and the full answer, it builds enough tension to earn the next 15 seconds. The phrase "a decision most brands in our space refuse to make" sets up the differentiator without naming it, which is what makes people keep watching.`},
+        {platform:"Email Subject Lines",post:`Curiosity: Something we almost never say out loud\nVulnerability: The reason I nearly didn't start ${bName}\nBoldness: ${bName} isn't for everyone — here is how to tell\nSpecificity: The one decision we make every week that costs us money\nWarmth: For the person who has been looking for this without knowing it`,why_it_works:`Each subject line pulls a different psychological lever — curiosity, vulnerability, boldness, specificity, warmth — without sounding like marketing. The goal is not to trick the open. The goal is to feel like a real person sent the email, because that is the voice ${bName}'s audience trusts.`},
+        {platform:"Unexpected Touchpoint (Order Confirmation / Welcome)",post:`Before anything else — thank you.\n\nYou chose ${bName} when you had other options, and that is not lost on us. We know how noisy this space is. We know how easy it would have been to pick something else.\n\nHere is what happens next: we are going to do the work we said we would do, the way we said we would do it. No surprises. No upsells. No asking you to share us on social until we have earned it.\n\nIf at any point you feel like we did not hold up our side, reply to this email and tell us. We would rather know.\n\n— The ${bName} team`,why_it_works:`Most brands waste the confirmation moment on logistics. ${bName} uses it to re-affirm the relationship the customer is actually buying into. It is a small moment with disproportionate emotional impact, because it is the first thing the customer reads after they have already committed.`}
       ]
     }
   };
