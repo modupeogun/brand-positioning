@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Bidya | Positioning IQ — Find the Story Only Your Brand Can Tell</title>
 <link href="https://fonts.googleapis.com/css2?family=Urbanist:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet">
+<!-- html2pdf.js — client-side PDF generation for the Brand Positioning Kit -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root{
@@ -406,7 +408,7 @@ textarea::placeholder,input::placeholder{color:var(--text-faint);}
     <div class="hero-inner fade-in">
       <div class="eyebrow"><span class="eyebrow-dot"></span>Bidya Positioning IQ<span class="eyebrow-dot"></span></div>
       <h1>Find the story only<br>your brand can <em>tell</em></h1>
-      <p class="hero-sub">Most businesses talk about what they sell. The ones people remember talk about what they believe. Answer ten honest questions — get a full brand positioning playbook built around yours.</p>
+      <p class="hero-sub">Most businesses talk about what they sell. The ones people remember talk about what they believe. Answer ten (10) honest questions — get a full brand positioning playbook built around yours.</p>
       <div class="hero-btns">
         <button class="btn-primary" onclick="startQuiz()">Start Your Positioning IQ</button>
         <button class="btn-ghost" onclick="showPage('about')">How It Works</button>
@@ -415,6 +417,10 @@ textarea::placeholder,input::placeholder{color:var(--text-faint);}
       <div class="logos-strip">
         <span class="logos-label">Studied brands include</span>
         <button class="logo-item" onclick="showPage('cases');setTimeout(()=>openCase('duolingo'),50)">Duolingo</button>
+        <button class="logo-item" onclick="showPage('cases');setTimeout(()=>openCase('paystack'),50)">Paystack</button>
+        <button class="logo-item" onclick="showPage('cases');setTimeout(()=>openCase('maxhosa'),50)">MaXhosa Africa</button>
+        <button class="logo-item" onclick="showPage('cases');setTimeout(()=>openCase('oriki'),50)">Oríkì</button>
+        <button class="logo-item" onclick="showPage('cases');setTimeout(()=>openCase('andela'),50)">Andela</button>
         <button class="logo-item" onclick="showPage('cases');setTimeout(()=>openCase('lohause'),50)">Lohause</button>
         <button class="logo-item" onclick="showPage('cases');setTimeout(()=>openCase('kaprica'),50)">Kaprica</button>
         <button class="logo-item" onclick="showPage('cases');setTimeout(()=>openCase('patagonia'),50)">Patagonia</button>
@@ -445,11 +451,15 @@ textarea::placeholder,input::placeholder{color:var(--text-faint);}
       </div>
       <div class="cases-grid">
         <div class="case-card" onclick="showPage('cases');setTimeout(()=>openCase('duolingo'),50)"><div class="case-tag">Tech · EdTech</div><h3>Why Duolingo became a media company before anyone noticed</h3><p>Stopped competing on features and started competing on culture — turning a mascot into a daily presence in internet life.</p><div class="case-model">Model: Serial / World-building</div></div>
+        <div class="case-card" onclick="showPage('cases');setTimeout(()=>openCase('paystack'),50)"><div class="case-tag">Fintech · Africa</div><h3>Why Paystack made kindness a competitive moat</h3><p>The Lagos-born fintech built Africa's most trusted payment infrastructure on a radical operating principle — and Stripe noticed.</p><div class="case-model">Model: Conviction / Values-led</div></div>
+        <div class="case-card" onclick="showPage('cases');setTimeout(()=>openCase('maxhosa'),50)"><div class="case-tag">Fashion · South Africa</div><h3>How MaXhosa made Xhosa beadwork the world's most wanted knitwear</h3><p>Laduma Ngxokolo refused the "African-inspired" trend and rooted every pattern in a specific cultural truth. The world followed.</p><div class="case-model">Model: Ritual / Heritage-led</div></div>
+        <div class="case-card" onclick="showPage('cases');setTimeout(()=>openCase('oriki'),50)"><div class="case-tag">Beauty · Nigeria</div><h3>Oríkì and the craft of indigenous luxury</h3><p>Built Nigeria's first premium skincare brand by creating an entirely new category — African botanical luxury — before anyone else saw it.</p><div class="case-model">Model: Ritual / Heritage-led</div></div>
+        <div class="case-card" onclick="showPage('cases');setTimeout(()=>openCase('andela'),50)"><div class="case-tag">Tech · Pan-African Talent</div><h3>Andela and the sentence that built a billion-dollar company</h3><p>"Brilliance is evenly distributed. Opportunity is not." One line became a talent platform that reshaped how the world saw African engineering.</p><div class="case-model">Model: Conviction / Belief-led</div></div>
         <div class="case-card" onclick="showPage('cases');setTimeout(()=>openCase('lohause'),50)"><div class="case-tag">Fashion · Eyewear</div><h3>How Lohause turned glasses into a literary experience</h3><p>Every caption reads like a journal entry. The product becomes incidental — what they're selling is a perspective.</p><div class="case-model">Model: Solitude / Introspective</div></div>
         <div class="case-card" onclick="showPage('cases');setTimeout(()=>openCase('kaprica'),50)"><div class="case-tag">Food · Hospitality</div><h3>How Kaprica built a cult following by never trying to</h3><p>No ads. No influencers. A restaurant in Carlton that became emotionally necessary to its regulars.</p><div class="case-model">Model: Ritual / Memory-led</div></div>
-        <div class="case-card" onclick="showPage('cases');setTimeout(()=>openCase('bkcoffee'),50)"><div class="case-tag">Coffee · Indie Brand</div><h3>BKCoffeeshop and the art of inventing your own universe</h3><p>Built a mythology so specific, so strange, so theirs — that imitation became pointless.</p><div class="case-model">Model: Serial / Mythology</div></div>
         <div class="case-card" onclick="showPage('cases');setTimeout(()=>openCase('patagonia'),50)"><div class="case-tag">Outdoor · Lifestyle</div><h3>Patagonia: when your values become your go-to-market</h3><p>They told customers not to buy their jacket. It worked — because they meant it.</p><div class="case-model">Model: Conviction / Values-led</div></div>
         <div class="case-card" onclick="showPage('cases');setTimeout(()=>openCase('notion'),50)"><div class="case-tag">SaaS · Productivity</div><h3>Notion and the brand that grew by becoming a philosophy</h3><p>Didn't sell software. Sold a way of thinking — and turned users into evangelists.</p><div class="case-model">Model: Community / Belief-led</div></div>
+        <div class="case-card" onclick="showPage('cases');setTimeout(()=>openCase('bkcoffee'),50)"><div class="case-tag">Coffee · Indie Brand</div><h3>BKCoffeeshop and the art of inventing your own universe</h3><p>Built a mythology so specific, so strange, so theirs — that imitation became pointless.</p><div class="case-model">Model: Serial / Mythology</div></div>
       </div>
     </div>
   </section>
@@ -462,10 +472,10 @@ textarea::placeholder,input::placeholder{color:var(--text-faint);}
         <button class="btn-primary" onclick="startQuiz()" style="margin-top:32px">Build My Positioning IQ →</button>
       </div>
       <div class="del-visual">
-        <div class="del-tab"><div class="del-icon">📐</div><div class="del-text"><h4>The Brand Playbook</h4><p>Archetype, positioning statement, core message, voice principles, and two moves to make right now.</p></div></div>
-        <div class="del-tab"><div class="del-icon">📖</div><div class="del-text"><h4>Your Growth Case Study</h4><p>An editorial piece written about your brand — cultural hook, analysis, and growth logic.</p></div></div>
-        <div class="del-tab"><div class="del-icon">✍️</div><div class="del-text"><h4>5 Content Pieces, Ready to Use</h4><p>Instagram, LinkedIn, video hook, email subject lines, and an unexpected touchpoint — in your voice.</p></div></div>
-        <div class="del-tab"><div class="del-icon">📧</div><div class="del-text"><h4>A 5-Day Follow-up Series</h4><p>Short practical emails helping you implement — from briefing designers to writing in your brand voice.</p></div></div>
+        <div class="del-tab"><div class="del-icon">📐</div><div class="del-text"><h4>The Brand Playbook</h4><p>Archetype, positioning statement, core message, voice principles, and two moves to make this week.</p></div></div>
+        <div class="del-tab"><div class="del-icon">📖</div><div class="del-text"><h4>Your Growth Case Study</h4><p>An editorial strategy piece written about your brand — cultural hook, analysis, and growth logic.</p></div></div>
+        <div class="del-tab"><div class="del-icon">✍️</div><div class="del-text"><h4>A Full Content Strategy</h4><p>Three content pillars plus five ready-to-use posts — Instagram, LinkedIn, video hook, email subject lines, and the one unexpected touchpoint your category is wasting.</p></div></div>
+        <div class="del-tab"><div class="del-icon">📄</div><div class="del-text"><h4>Delivered as Your Brand Positioning Kit</h4><p>All three — playbook, case study, and content strategy — arrive in your inbox as one PDF, written specifically for your brand. Keep it. Share it with your team. Use it.</p></div></div>
       </div>
     </div>
   </section>
@@ -582,6 +592,7 @@ textarea::placeholder,input::placeholder{color:var(--text-faint);}
   </div>
   <div class="cases-filter-bar">
     <button class="filter-btn active" onclick="filterCases('all',this)">All Brands</button>
+    <button class="filter-btn" onclick="filterCases('africa',this)">African Brands</button>
     <button class="filter-btn" onclick="filterCases('tech',this)">Tech</button>
     <button class="filter-btn" onclick="filterCases('hospitality',this)">Food & Hospitality</button>
     <button class="filter-btn" onclick="filterCases('fashion',this)">Fashion</button>
@@ -602,6 +613,10 @@ textarea::placeholder,input::placeholder{color:var(--text-faint);}
       </div>
     </div>
     <div class="cases-standard-grid">
+      <div class="case-std-card" data-category="africa tech" onclick="openCase('paystack')"><div class="case-std-tag">Fintech · Africa</div><h3>Why Paystack Made Kindness a Competitive Moat</h3><p>How a Lagos-born fintech built Africa's most trusted payment rails on a radical operating principle — and became Stripe's $200M acquisition.</p><div class="case-std-model">Model: Conviction / Values-led</div></div>
+      <div class="case-std-card" data-category="africa fashion" onclick="openCase('maxhosa')"><div class="case-std-tag">Fashion · Heritage · South Africa</div><h3>How MaXhosa Africa Made Xhosa Beadwork the World's Most Wanted Knitwear</h3><p>Laduma Ngxokolo didn't chase "African-inspired". He rooted every pattern in a specific cultural truth — and the world followed him into it.</p><div class="case-std-model">Model: Ritual / Heritage-led</div></div>
+      <div class="case-std-card" data-category="africa lifestyle" onclick="openCase('oriki')"><div class="case-std-tag">Beauty · Nigeria</div><h3>Oríkì and the Craft of Indigenous Luxury</h3><p>Joycee Awosika built Nigeria's first premium skincare brand by inventing the category the industry hadn't named yet.</p><div class="case-std-model">Model: Ritual / Heritage-led</div></div>
+      <div class="case-std-card" data-category="africa tech" onclick="openCase('andela')"><div class="case-std-tag">Tech · Pan-African Talent</div><h3>Andela and the Sentence That Built a Billion-Dollar Company</h3><p>"Brilliance is evenly distributed. Opportunity is not." One line became a talent platform that reshaped how the world saw African engineering.</p><div class="case-std-model">Model: Conviction / Belief-led</div></div>
       <div class="case-std-card" data-category="lifestyle" onclick="openCase('patagonia')"><div class="case-std-tag">Outdoor · Lifestyle</div><h3>Patagonia: When Your Values Become Your Go-To-Market</h3><p>They told customers not to buy their jacket. It became one of the most effective brand moments in retail history.</p><div class="case-std-model">Model: Conviction / Values-led</div></div>
       <div class="case-std-card" data-category="tech" onclick="openCase('notion')"><div class="case-std-tag">SaaS · Productivity</div><h3>Notion and the Brand That Grew By Becoming a Philosophy</h3><p>Didn't sell software. Sold a way of thinking — and turned users into evangelists before customers.</p><div class="case-std-model">Model: Community / Belief-led</div></div>
       <div class="case-std-card" data-category="fashion" onclick="openCase('lohause')"><div class="case-std-tag">Eyewear · Fashion</div><h3>How Lohause Turned Glasses Into a Literary Experience</h3><p>Every caption reads like a journal entry. The product almost becomes incidental. Selling a perspective.</p><div class="case-std-model">Model: Solitude / Introspective</div></div>
@@ -761,10 +776,17 @@ function closeMobNav(){document.getElementById('nav-links').classList.remove('op
 
 function filterCases(cat,btn){
   document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
-  document.querySelectorAll('[data-category]').forEach(el=>{el.style.display=(cat==='all'||el.dataset.category===cat)?'':'none';});
+  document.querySelectorAll('[data-category]').forEach(el=>{
+    const cats=(el.dataset.category||'').split(/\s+/);
+    el.style.display=(cat==='all'||cats.includes(cat))?'':'none';
+  });
 }
 
 const CASES={
+  paystack:{tag:"Fintech · Africa · $200M Stripe acquisition",title:"Why Is Paystack <em>So Kind</em>?",sub:"How a Lagos-born payments company built Africa's most trusted fintech infrastructure on a radical operating principle — and became Stripe's largest African acquisition.",industry:"Fintech / Infrastructure",model:"Conviction / Values-led",lesson:"In infrastructure, trust is the product",body:`<h4>Africa's Trust Problem Was a Payments Problem</h4><p>For most of its history, African commerce ran on a simple friction: it was easier to not trust than to trust. Failed transactions, opaque fees, missing settlements — the infrastructure layer of the internet economy worked against the businesses trying to use it. Building anything online meant building on sand. When Shola Akinlade and Ezra Olubi launched Paystack out of Lagos in 2015, the pitch sounded almost embarrassingly simple. They were going to be honest about what worked and what didn't.</p><blockquote>"We chose kindness as an operating system. It wasn't a branding decision. It was the only way to build something people could actually depend on."</blockquote><h4>What Paystack Was Actually Selling</h4><p>Paystack's API wasn't dramatically different from the incumbents. What was different was everything around it. Documentation you could actually read. A support team that replied in hours instead of weeks. A dashboard that told you the truth about failed transactions. A founding team that showed up in WhatsApp groups to help developers debug their integrations at 2am. None of those things were features. They were the brand.</p><p>In a category where every competitor had roughly the same product, Paystack made the operating behaviour the differentiator. The engineers they hired had to be kind to users. The copy on the status page had to be honest even when the news was bad. The refund policy had to work the way it said it worked. When your values show up in every customer interaction, they stop being a slogan and start being a moat.</p><h4>The Brand as Trust Infrastructure</h4><p>By 2020, Paystack was processing over half of all online payments in Nigeria and Stripe acquired it for over $200 million — the largest startup exit in Nigeria's history at the time. The acquisition wasn't a bet on the code. It was a bet on what the Paystack team had already built in the minds of African developers, founders, and finance teams. That is trust infrastructure, and it compounds faster than any feature roadmap.</p><blockquote>"The best part of Paystack wasn't the API. It was knowing that if something broke, a human being who cared would be on the other end of the ticket within the hour."</blockquote><div class="lesson-box"><div class="r-label">The Positioning Lesson</div><p>When your category is full of brands that treat support, documentation, and honesty as costs, you can win just by treating them as the product. Paystack didn't invent a new payments category. It made the category's unloved edges the entire point. The question for any infrastructure brand: what does every competitor in your space half-do that you could do fully?</p></div>`},
+  maxhosa:{tag:"Fashion · South Africa · Heritage-led",title:"How MaXhosa Africa Made <em>Xhosa Beadwork</em> the World's Most Wanted Knitwear",sub:"Laduma Ngxokolo didn't chase the 'African-inspired' trend. He rooted every pattern in a specific cultural truth — and built a global fashion house from that decision.",industry:"Fashion / Heritage Apparel",model:"Ritual / Heritage-led",lesson:"Specificity is the highest form of luxury",body:`<h4>The Trap of Being African-Inspired</h4><p>For decades, African motifs in global fashion meant a certain flattening — prints extracted from context, patterns used for exoticism, symbols emptied of their meaning. Western brands called it "inspired by Africa." African designers who played that game inherited the flattening. Laduma Ngxokolo grew up in Port Elizabeth, watched what happened when Xhosa beadwork became a runway trend somewhere else, and made a decision that shaped the rest of his career. He would not translate his culture for the West. He would build a brand that assumed the West was smart enough to come to it.</p><blockquote>"I didn't want to be inspired by where I'm from. I wanted the clothes to be from where I'm from — technically, materially, narratively. There's a difference, and my customer felt it immediately."</blockquote><h4>Patterns as Proper Nouns</h4><p>MaXhosa Africa's knitwear doesn't use "African patterns." It uses specific, named Xhosa beadwork motifs — each one with a history, a context, and a meaning Laduma can explain at length. Umgubasi. Umbhaco. The patterns belong to a visual language with grammar. When a brand treats its source material with that level of specificity, it earns a kind of authority that generic reference can never fake. Every knit becomes a proper noun instead of a vibe.</p><p>That specificity is also what made the brand impossible to copy. A competitor could print similar shapes onto fabric, but they couldn't rebuild the knowledge system behind them. MaXhosa became the category of one because the category itself was so precisely defined that only one brand fit inside it.</p><h4>The Global Luxury Pivot That Wasn't a Pivot</h4><p>By 2020, MaXhosa was stocked in boutiques from London to Tokyo and Laduma had been named Burberry's Designer of the Year for Africa. None of that came from softening the brand for foreign markets. It came from the opposite — leaning harder into the specificity and trusting that luxury buyers, more than anyone, would recognise depth when they saw it. Luxury isn't about scarcity of material. It is about scarcity of meaning.</p><blockquote>"Luxury customers can tell when a story is borrowed and when it's lived. MaXhosa is lived. That's why it travels."</blockquote><div class="lesson-box"><div class="r-label">The Positioning Lesson</div><p>The more specifically you root your brand, the more universally it can travel. Generalisation is a ceiling; specificity is a springboard. If you are building a brand with cultural or craft heritage, the instinct to "translate it for the mainstream" is usually the instinct to strip out the very thing that would have made it impossible to copy.</p></div>`},
+  oriki:{tag:"Beauty · Nigeria · Botanical luxury",title:"Oríkì and the Craft of <em>Indigenous Luxury</em>",sub:"Joycee Awosika built Nigeria's first premium skincare brand by refusing the category's playbook — and quietly invented a new one: African botanical luxury.",industry:"Beauty / Premium Skincare",model:"Ritual / Heritage-led",lesson:"Sometimes the brand work is building the category first",body:`<h4>The Skincare Shelf Nigeria Didn't Have</h4><p>When Joycee Awosika began what would become Oríkì, the premium skincare shelf for African women was structurally incomplete. On one side sat imported Western luxury brands — designed for different skin, different climate, different rituals, and priced in a currency most customers could not access. On the other sat local brands fighting in a mass market where "affordable" meant "cut corners." There was no middle. There was also no word for what Oríkì would eventually become: African botanical luxury, made in Africa, for the world.</p><blockquote>"The word 'luxury' was not being used for anything Nigerian when I started. That wasn't a marketing problem to solve — that was the category I had to build before the brand could exist."</blockquote><h4>The Refusal at the Heart of the Brand</h4><p>Oríkì's early years were defined by what the founder refused to do. No bleaching agents — at the time still the fastest way to grow a beauty brand in certain African markets. No imported base formulations rebottled with a local name. No compromise on packaging, scent, or the textures that make a skincare ritual feel worth slowing down for. Each refusal cost something in the short term. Each refusal was also a positioning statement that compounded over the long term.</p><p>The decision to use indigenous Nigerian botanicals — moringa, shea, baobab, black soap — wasn't an aesthetic choice. It was a supply-chain, sourcing, and research investment that gave Oríkì a moat that imported brands structurally could not replicate. By the time the rest of the world caught up to "African-origin skincare" as a trend, Oríkì had already been building the category's infrastructure for nearly a decade.</p><h4>The Spa as a Branding Decision</h4><p>Oríkì is also one of the first Nigerian skincare brands to operate its own spa network. That decision looks like vertical integration on the outside. From the inside, it's a brand decision. A customer who experiences Oríkì as a 90-minute ritual in a physical space has a fundamentally different relationship with the brand than one who buys a jar off a shelf. The spa taught the customer what the brand meant, and the customer then went home and bought the products with a loyalty that no Instagram ad could have manufactured.</p><blockquote>"The spa is not a revenue channel. It's the place where the brand teaches itself. Everything we learn there shows up in the bottle, and everything we put in the bottle is something a customer has already felt in the room."</blockquote><div class="lesson-box"><div class="r-label">The Positioning Lesson</div><p>If the category you're trying to build doesn't exist yet, your first brand job isn't differentiation — it's category creation. Oríkì didn't compete with other skincare brands. It defined the terms by which its segment of the market would be understood, and by the time competitors showed up, the vocabulary belonged to them.</p></div>`},
+  andela:{tag:"Tech · Pan-African Talent · Belief-led",title:"Andela and the Sentence That <em>Built a Company</em>",sub:"\"Brilliance is evenly distributed. Opportunity is not.\" One sentence became a billion-dollar talent platform — and reshaped how the world saw African engineering.",industry:"Tech / Talent Infrastructure",model:"Conviction / Belief-led",lesson:"A positioning statement can do the work of a business plan",body:`<h4>The Sentence That Carried Everything</h4><p>When Andela was founded in Lagos in 2014, the global tech industry had a quiet assumption baked into its talent model. The best engineers came from a short list of places, and everyone else was a discount-priced alternative. Iyinoluwa Aboyeji, Jeremy Johnson, and the founding team refused the assumption — not with a slide deck, but with a single sentence that became the brand's internal compass. <em>Brilliance is evenly distributed. Opportunity is not.</em> Everything Andela did for the next decade was a literal operationalisation of that line.</p><blockquote>"We didn't write that sentence as marketing copy. We wrote it because we needed a phrase that could settle any argument inside the company. Every decision had to serve it or we weren't doing our job."</blockquote><h4>What the Belief Actually Built</h4><p>A positioning statement is supposed to describe the brand. Andela's positioning statement also described the business model. If brilliance was evenly distributed and opportunity was not, then the company's job was to build the opportunity infrastructure: training, vetting, placement, continuous development, a network of engineers from Lagos to Nairobi to Kampala who could compete with any engineer anywhere in the world. Each of those operational layers existed because the sentence demanded it, not because a consultant suggested it.</p><p>This is rare. Most brands have a tagline that tries to describe the company it already is. Andela had a tagline that described the company it was trying to become, and then spent a decade aligning the operating model to it. When brand and operations converge, the result is a company that cannot be copied by competitors who don't share the same underlying belief.</p><h4>The Quiet Global Pivot</h4><p>In 2021, Andela expanded beyond Africa and began matching engineers globally. Some founders worried the expansion would dilute the story. It didn't, because the story had never been "African tech talent." The story had always been the sentence — brilliance is evenly distributed, opportunity is not — and that sentence was just as true for engineers in Cairo, Manila, or São Paulo as it was for engineers in Lagos. The brand travelled because the belief travelled.</p><blockquote>"When the conviction is specific and the geography is incidental, you can grow without losing the thing that made you worth paying attention to in the first place."</blockquote><div class="lesson-box"><div class="r-label">The Positioning Lesson</div><p>If your positioning statement could apply to any brand in your category, it isn't a positioning statement — it's a slogan. A real positioning statement describes a belief specific enough that it can be used to settle internal arguments about hiring, pricing, product, and growth. Andela's sentence did all four jobs, which is why it worked as both a brand and a business plan.</p></div>`},
   duolingo:{tag:"Tech · EdTech · $17B valuation",title:"Why Is Duolingo <em>So Crazy</em>?",sub:"How one app built a $17B brand not by competing on features — but by becoming a character in internet culture.",industry:"EdTech / Gaming",model:"Serial / World-building",lesson:"Turn your mascot into a media company",body:`<h4>Humanity Is Multilingual — and That's a Business Problem</h4><p>The mythical story of the Tower of Babel says humanity was once united — until language divided them. The economic reality it describes is real: in a world of thousands of languages, the desire to connect across them is one of the oldest human drives there is.</p><p>When Duolingo launched in 2012, language learning wasn't a new market. It was a crowded one. The question wasn't whether people wanted to learn languages. It was whether anyone had found a way to make them actually stick with it.</p><blockquote>Most language learning products solve the wrong problem. They assume people stop because the method is wrong. Duolingo understood people stop because life gets in the way — and built a product specifically designed to fight that.</blockquote><h4>Duolingo Isn't Really a Language App. It's a Game.</h4><p>The company doesn't primarily compete with Rosetta Stone or Babbel. It competes with Candy Crush. With Instagram. With every other app fighting for five minutes of your attention at 10pm. Duolingo rebuilt its retention system around the same psychological loops that keep people playing mobile games: streaks, leaderboards, gem systems, weekly competitions. The leaderboard feature alone increased overall learning time by 17% and tripled the number of highly engaged learners.</p><h4>The Mascot That Became a Media Company</h4><p>Duo, the green owl, started as a notification mechanism. Then Duolingo's social media team started treating Duo as a character with a real personality. Unhinged in exactly the right proportions. Duo showed up at a Charli xcx concert. Collaborated with Squid Game. Faked its own death — users earned over 50 billion XP collectively to "revive" it. That's not a marketing campaign. That's a narrative arc.</p><blockquote>By creating a crazy brand and mascot, Duolingo can insert itself into any conversation on the internet. The company expanded its audience from language learners to people who want to have fun.</blockquote><h4>What The Numbers Actually Say</h4><p>In 2023, Duolingo posted $531M in revenue and its first profitable year. 110 million monthly active users. A $17B market cap. And the brand has quietly repositioned from "language learning app" to "the world's most engaging learning platform" — with Math and Music now available, unknown to 80% of users. The owl isn't going anywhere.</p><div class="lesson-box"><div class="r-label">The Positioning Lesson</div><p>Duolingo's growth didn't come from being better at teaching languages. It came from asking a different question: not "how do we teach better?" but "how do we make this impossible to quit?" If your product has a retention problem, that's your brand problem first.</p></div>`},
   patagonia:{tag:"Outdoor · Lifestyle · Values-led",title:"Patagonia: When Your Values Become <em>Your Go-To-Market</em>",sub:"They told customers not to buy their jacket. It worked. Conviction isn't a risk — it's the whole strategy.",industry:"Outdoor / Apparel",model:"Conviction / Values-led",lesson:"Belief is a business model",body:`<h4>The Ad That Should Have Failed</h4><p>On Black Friday 2011, Patagonia ran a full-page New York Times ad showing their most popular fleece jacket. Headline: "Don't Buy This Jacket." The ad explained the environmental cost of producing it — water used, carbon emitted, waste generated. It told customers to think before they bought. To repair what they had. Sales went up.</p><blockquote>The brands that last don't just sell products — they sell a position on what matters. Patagonia has held the same position for over 50 years, and that consistency is now worth more than any campaign could buy.</blockquote><h4>What Patagonia Is Actually Selling</h4><p>Patagonia sells outdoor clothing. But when someone chooses Patagonia over a technically similar product at half the price, they're buying membership. They're buying the right to say — to themselves and anyone who notices the logo — that they're the kind of person who cares. When your brand stands for something your customer also stands for, you stop being a vendor and start being a symbol.</p><h4>The Supply Chain Is the Story</h4><p>Most brands treat their supply chain as something to manage. Patagonia treats theirs as something to narrate. The Footprint Chronicles — documenting the social and environmental impact of their manufacturing — published the good and the bad. This transparency is load-bearing. It's the proof. And the proof is the positioning.</p><div class="lesson-box"><div class="r-label">The Positioning Lesson</div><p>When your values are built into your operations, your supply chain, and your ownership structure, they become genuinely defensible. Don't just say what you believe. Build it into how you operate, so it's true even when nobody's watching.</p></div>`},
   notion:{tag:"SaaS · Productivity · Community-led",title:"Notion and the Brand That Grew By <em>Becoming a Philosophy</em>",sub:"Notion didn't sell software. It sold a way of thinking — and turned a productivity tool into a belief system.",industry:"SaaS / Productivity",model:"Community / Belief-led",lesson:"Sell the thinking, not the tool",body:`<h4>The Problem With Productivity Software</h4><p>Competing on features in productivity software is a race to the bottom. There's always someone building the same feature cheaper and faster. The brands that survive — and grow without burning money on acquisition — make their users feel like they belong to something, not just that they use something.</p><blockquote>The most durable software brands aren't tools. They're worldviews. When your product comes with a philosophy attached, users don't just switch to it. They convert to it.</blockquote><h4>What Notion Actually Sold</h4><p>The promise wasn't "here's a better note app." It was "here's one place where your thinking can live, connected, in whatever shape you need." A philosophical promise. It attracted people who thought carefully about how they worked, who had opinions about their tools. These early users didn't just like Notion — they evangelised it. Built templates. Made tutorials. The product gave them something to organise, but the brand gave them an identity.</p><h4>The Template Economy as Brand Infrastructure</h4><p>By making it easy to share Notion setups, they turned their most engaged users into a distribution channel. A user shares their "life operating system." Ten thousand people duplicate it. Each one is now inside the Notion world, shaped by another user's philosophy about how work should work. The product didn't just acquire users. It created practitioners.</p><div class="lesson-box"><div class="r-label">The Positioning Lesson</div><p>Tools get replaced. Worldviews get defended. If your product comes with a philosophy — a way of thinking about the problem you solve — your users become advocates. The question: what does it mean to think like someone who uses your product?</p></div>`},
@@ -942,11 +964,14 @@ async function generateAll(){
   try{
     const prompts=buildPrompts();
     // Fire all 3 section calls in parallel so total wall-clock time is just
-    // the slowest single call — avoids Netlify 504 on the monolithic prompt.
+    // the slowest single call — avoids Netlify 26s function timeout. Each
+    // call caps its own max_tokens so even the slowest one completes under
+    // Netlify's sync function limit. Uses claude-haiku-4-5 by default for
+    // speed; quality is still high because the prompts carry the heavy lift.
     const [playbookData, caseStudyData, contentStrategyData]=await Promise.all([
-      callAPI(prompts.playbook),
-      callAPI(prompts.caseStudy),
-      callAPI(prompts.contentStrategy)
+      callAPI(prompts.playbook,3000),
+      callAPI(prompts.caseStudy,3000),
+      callAPI(prompts.contentStrategy,4000)
     ]);
     // Merge the three section responses into a single result object.
     const parsed={
@@ -960,16 +985,98 @@ async function generateAll(){
     displayResults(parsed);
     sendWebhook({uName,bName,uEmail,answers,output:parsed});
     sendToEmailProvider({uName,bName,uEmail,answers,output:parsed});
+    // Generate PDF of the full kit and email it to the user via Resend.
+    // Runs after displayResults so the DOM is populated before html2pdf reads it.
+    sendPositioningKit(parsed);
   }catch(e){
     console.error('generateAll error:',e);
     displayResults(getFallback());
     sendWebhook({uName,bName,uEmail,answers,output:getFallback()});
     sendToEmailProvider({uName,bName,uEmail,answers,output:getFallback()});
+    sendPositioningKit(getFallback());
   }
 }
 
-async function callAPI({system, user}){
-  const res=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:user, system:system})});
+// Build a PDF of the Brand Positioning Kit and email it as an attachment.
+// Uses html2pdf.js in the browser to render a print-optimised version of the
+// playbook, case study and content strategy tabs into a single PDF blob,
+// then posts the base64 payload to /api/send-kit which emails it via Resend.
+async function sendPositioningKit(d){
+  if(typeof html2pdf==='undefined'){console.warn('html2pdf not loaded, skipping PDF');return;}
+  try{
+    const pdfHtml=buildKitHTML(d);
+    const container=document.createElement('div');
+    container.style.cssText='position:fixed;left:-10000px;top:0;width:794px;background:#fff;color:#1a1a1a;font-family:Urbanist,system-ui,sans-serif;';
+    container.innerHTML=pdfHtml;
+    document.body.appendChild(container);
+    const opt={margin:[12,12,14,12],filename:`${bName.replace(/[^a-z0-9]/gi,'_')}_Brand_Positioning_Kit.pdf`,image:{type:'jpeg',quality:0.96},html2canvas:{scale:2,useCORS:true,backgroundColor:'#ffffff'},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['css','legacy']}};
+    const pdfBlob=await html2pdf().set(opt).from(container).outputPdf('blob');
+    document.body.removeChild(container);
+    const base64=await new Promise((resolve,reject)=>{
+      const r=new FileReader();
+      r.onload=()=>resolve(r.result.split(',')[1]);
+      r.onerror=reject;
+      r.readAsDataURL(pdfBlob);
+    });
+    const res=await fetch('/api/send-kit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:uEmail,name:uName,brand:bName,pdfBase64:base64})});
+    if(!res.ok){const err=await res.json().catch(()=>({}));console.warn('send-kit failed:',err);}
+    else console.log('Kit emailed to',uEmail);
+  }catch(err){
+    console.warn('sendPositioningKit error:',err);
+  }
+}
+
+// Build a styled, print-friendly HTML version of the full kit for html2pdf.
+function buildKitHTML(d){
+  const pb=d.playbook||{};
+  const cs=d.case_study||{};
+  const csg=d.content_strategy||{};
+  const hdrs=cs.section_headers||['The Bigger Picture','The Positioning','Why It Compounds'];
+  const esc=s=>(s||'').toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const paras=s=>(s||'').split('\n').filter(Boolean).map(p=>`<p style="margin:0 0 14px">${esc(p)}</p>`).join('');
+  const vp=(pb.voice_principles||[]).map(v=>`<li style="margin-bottom:8px">${esc(v)}</li>`).join('');
+  const pil=(csg.pillars||[]).map(p=>`<li style="margin-bottom:10px">${esc(p)}</li>`).join('');
+  const posts=(csg.posts||[]).map(p=>`<div style="margin-bottom:26px;padding:18px 20px;background:#f7f3ec;border-left:3px solid #B83232;page-break-inside:avoid"><div style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#B83232;font-weight:700;margin-bottom:10px">${esc(p.platform)}</div><div style="font-size:13px;line-height:1.7;white-space:pre-wrap;margin-bottom:12px">${esc(p.post)}</div><div style="font-size:11px;color:#666;font-style:italic;border-top:1px solid rgba(0,0,0,0.08);padding-top:10px"><strong>Why this works:</strong> ${esc(p.why_it_works)}</div></div>`).join('');
+  const pageStyle='page-break-after:always;padding:24px 28px;';
+  return `
+  <div style="font-family:Urbanist,system-ui,sans-serif;color:#1a1a1a;line-height:1.6">
+    <div style="${pageStyle}text-align:center;padding-top:160px">
+      <div style="font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:#B83232;font-weight:700;margin-bottom:22px">The Brand Positioning Kit</div>
+      <h1 style="font-size:38px;font-weight:800;line-height:1.15;margin-bottom:20px">${esc(bName)}</h1>
+      <p style="font-size:15px;color:#666;margin-bottom:10px">${esc(d.headline||'')}</p>
+      <p style="font-size:14px;color:#888;max-width:520px;margin:22px auto 0;font-style:italic">${esc(d.subline||'')}</p>
+      <div style="position:absolute;bottom:60px;left:0;right:0;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#999">Prepared for ${esc(uName)} · Bidya Positioning IQ</div>
+    </div>
+    <div style="${pageStyle}">
+      <div style="font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:#B83232;font-weight:700;margin-bottom:8px">Part One</div>
+      <h2 style="font-size:28px;font-weight:800;margin-bottom:26px">The Brand Playbook</h2>
+      <div style="margin-bottom:22px"><div style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#999;font-weight:700;margin-bottom:6px">Your Brand Archetype</div><h3 style="font-size:22px;font-weight:800;margin-bottom:12px">${esc(pb.archetype_name||'')}</h3><div style="font-size:13px;line-height:1.75">${paras(pb.archetype_description)}</div></div>
+      <div style="margin-bottom:22px;padding:16px 18px;background:#f7f3ec;border-left:3px solid #B83232"><div style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#999;font-weight:700;margin-bottom:6px">Positioning Statement</div><div style="font-size:14px;line-height:1.75;font-style:italic">${paras(pb.positioning_statement)}</div></div>
+      <div style="margin-bottom:22px;padding:16px 18px;background:#f7f3ec;border-left:3px solid #B83232"><div style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#999;font-weight:700;margin-bottom:6px">Core Message</div><div style="font-size:16px;line-height:1.5;font-weight:600">${esc(pb.core_message||'')}</div></div>
+      <div style="margin-bottom:22px"><div style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#999;font-weight:700;margin-bottom:10px">Voice Principles</div><ul style="font-size:13px;line-height:1.7;padding-left:20px;margin:0">${vp}</ul></div>
+      <div style="margin-bottom:22px"><div style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#999;font-weight:700;margin-bottom:6px">Your Competitive Edge</div><div style="font-size:13px;line-height:1.75">${paras(pb.differentiation)}</div></div>
+      <div style="margin-bottom:22px"><div style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#999;font-weight:700;margin-bottom:6px">Audience Insight</div><div style="font-size:13px;line-height:1.75">${paras(pb.audience_insight)}</div></div>
+      <div style="margin-bottom:22px;padding:16px 18px;background:#1a1a1a;color:#fff;border-radius:6px"><div style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#B83232;font-weight:700;margin-bottom:10px">Two Moves to Make Now</div><div style="font-size:12px;font-weight:700;color:#B83232;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.06em">Stop doing this</div><p style="font-size:13px;line-height:1.7;margin-bottom:14px">${esc(pb.what_to_stop||'')}</p><div style="font-size:12px;font-weight:700;color:#B83232;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.06em">Start doing this</div><p style="font-size:13px;line-height:1.7">${esc(pb.what_to_start||'')}</p></div>
+    </div>
+    <div style="${pageStyle}">
+      <div style="font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:#B83232;font-weight:700;margin-bottom:8px">Part Two</div>
+      <h2 style="font-size:28px;font-weight:800;margin-bottom:10px">Growth Case Study</h2>
+      <h3 style="font-size:18px;font-weight:700;margin-bottom:22px;color:#444">${esc(cs.title||'')}</h3>
+      <h4 style="font-size:14px;font-weight:800;margin:18px 0 10px;color:#B83232">${esc(hdrs[0])}</h4><div style="font-size:12px;line-height:1.75">${paras(cs.cultural_hook)}</div>
+      <h4 style="font-size:14px;font-weight:800;margin:18px 0 10px;color:#B83232">${esc(hdrs[1])}</h4><div style="font-size:12px;line-height:1.75">${paras(cs.brand_analysis)}</div>
+      <h4 style="font-size:14px;font-weight:800;margin:18px 0 10px;color:#B83232">${esc(hdrs[2])}</h4><div style="font-size:12px;line-height:1.75">${paras(cs.growth_implication)}</div>
+    </div>
+    <div style="padding:24px 28px">
+      <div style="font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:#B83232;font-weight:700;margin-bottom:8px">Part Three</div>
+      <h2 style="font-size:28px;font-weight:800;margin-bottom:22px">Your Content Strategy</h2>
+      <div style="margin-bottom:26px"><div style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#999;font-weight:700;margin-bottom:10px">Content Pillars</div><ul style="font-size:13px;line-height:1.7;padding-left:20px;margin:0">${pil}</ul></div>
+      ${posts}
+    </div>
+  </div>`;
+}
+
+async function callAPI({system, user}, maxTokens){
+  const res=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:user, system:system, max_tokens:maxTokens||3500})});
   if(!res.ok){
     const errData=await res.json().catch(()=>({}));
     console.error('API error details:',errData);
@@ -1093,38 +1200,46 @@ Return ONLY valid JSON with this exact shape (no backticks, no preamble):
   // ─── SECTION 3: CONTENT STRATEGY ───
   const contentStrategyUser=`${quizInput}
 
-Write a content strategy for ${bName} with 3 pillars and 5 complete, ready-to-use posts.
+You are now writing the CONTENT STRATEGY for ${bName}. This is the most important deliverable in the whole playbook — it is how the owner actually carries the positioning you just defined into the real world. If this section is generic, the entire tool fails.
+
+═══ CONTENT STRATEGY RULES (NON-NEGOTIABLE) ═══
+- Write as the brand whisperer who just defined ${bName}'s archetype and positioning. Every post must SOUND like the archetype and REINFORCE the positioning. If you could lift the post and drop it onto a different brand, REWRITE IT.
+- Every post must reference the specific product, service, or business model of ${bName} — not a generic "your brand" post. Mention the actual thing being sold.
+- Each post must include at least one SPECIFIC detail a reader would only know if they were really inside this brand (a number, a time of day, an ingredient, a process name, an unusual refusal, a customer moment). Invent plausible specifics where necessary — a brand whisperer with 10 years of experience knows the texture of every category and is not afraid to commit.
+- NO GENERIC ADVICE. No "share behind the scenes". No "tell your story". No "engage your community". Write the actual thing, not a description of the thing.
+- NEVER open a post with "In today's..." or "Let's talk about..." or any LinkedIn-influencer cliché.
+- Every sentence in every post must be complete. No ellipses. No "..." No dangling clauses.
 
 Return ONLY valid JSON with this exact shape (no backticks, no preamble):
 
 {
   "content_strategy": {
-    "pillars": ["Exactly 3 content pillars. Each must be a MEMORABLE, SPECIFIC phrase that only makes sense for ${bName} and covers a DIFFERENT angle — do not repeat or rephrase the same idea. Pillar 1 should cover the craft/process angle. Pillar 2 should cover the customer/community angle. Pillar 3 should cover the belief/point-of-view angle. Each phrase must reference the actual product or service. Example for skincare: 'The 6AM formulation sessions nobody asked to see'. Do NOT use generic pillars like 'Behind the scenes' or 'Customer stories'."],
+    "pillars": ["Exactly 3 content pillars as MEMORABLE, SPECIFIC phrases that only make sense for ${bName}. Each pillar must cover a DIFFERENT angle and lead to completely different posts — do not repeat or rephrase. Pillar 1 = craft/process/the decisions inside the work. Pillar 2 = the customer's world / what brought them here / the moments ${bName} shows up in their life. Pillar 3 = the belief / point-of-view / the thing the category refuses to say. Each pillar must name the actual product, service, or industry specific of ${bName}. Examples (invent your own, do NOT reuse): 'The 6am formulation sessions we stopped editing for the internet', 'The Tuesday-night problems our people solve with us in the group chat', 'What the wellness industry gets wrong about rest — and why we refuse to call it self-care'. Do NOT use generic pillars like 'Behind the scenes', 'Customer stories', 'Education', 'Inspiration'."],
     "posts": [
       {
         "platform": "Instagram Caption",
-        "post": "A complete Instagram caption (120-180 words) in ${bName}'s first-person voice ('we'). References the specific product/service interpreted into natural prose. Line breaks for readability. Every sentence complete.",
-        "why_it_works": "2 complete sentences on the strategic choice."
+        "post": "A fully written Instagram caption of 140-200 words in ${bName}'s first-person voice ('we'). Opens with a hook that is NOT a question and NOT a cliché. Names a specific product, ingredient, process, or moment from ${bName}. Includes one line that only ${bName} could have written because it names something weirdly specific. Uses line breaks for readability. Ends with a soft call-back to the positioning — not a CTA like 'shop now'. Every sentence complete and grammatical.",
+        "why_it_works": "2 complete sentences. First sentence: the strategic choice made (e.g. 'This opens on a refusal instead of a pitch, which signals confidence to the scroll-tired reader.'). Second sentence: what this specifically does for ${bName}'s archetype and audience."
       },
       {
         "platform": "LinkedIn Post",
-        "post": "A complete LinkedIn post (180-280 words) with a strong hook and a point of view about the specific industry. Written in the brand owner's first-person voice ('I'). Do not name the owner. Every sentence complete.",
-        "why_it_works": "2 complete sentences on why this works for LinkedIn and this industry."
+        "post": "A fully written LinkedIn post of 200-300 words with a sharp hook in the first line that stops the scroll without sounding like a LinkedIn influencer. Written in the brand owner's first-person voice ('I') — do not name the owner. Takes a REAL position on a specific debate, myth, or habit inside ${bName}'s industry. Includes at least one concrete detail from running ${bName} (a decision, a number, a refused client, a moment). Every sentence complete. No em-dash-stuffed prose. No 'Here's what I learned'. End with a single line that lands — not a question, not a CTA.",
+        "why_it_works": "2 complete sentences on why this hook works on LinkedIn for ${bName}'s specific category, and why the position taken is a smart positioning move for the archetype."
       },
       {
         "platform": "Short-form Video Hook",
-        "post": "The opening 4-5 complete lines of a Reel/TikTok script. Must stop the scroll. References ${bName}'s specific product/service. Include visual direction notes in [brackets]. Every line complete.",
-        "why_it_works": "2 complete sentences on why this hook works."
+        "post": "The opening 5-6 complete lines of a Reel/TikTok/Shorts script, formatted as short snappy beats. Each beat is one line of dialogue on its own row. Include visual direction in [brackets] above each beat. Must stop the scroll in the first 2 seconds — a weird statement, a refusal, a confession, or a specific number from running ${bName}. References the actual product/service. No narration about what the brand 'is'. Every line complete.",
+        "why_it_works": "2 complete sentences. First: why this specific hook pattern works for the platform. Second: how it reinforces ${bName}'s archetype voice."
       },
       {
-        "platform": "Email Subject Lines",
-        "post": "Exactly 5 email subject lines on separate lines, each labeled and complete: 'Curiosity: ...', 'Vulnerability: ...', 'Boldness: ...', 'Specificity: ...', 'Warmth: ...'. Each complete, each references the product/service.",
-        "why_it_works": "2 complete sentences on the psychology behind these choices."
+        "platform": "Email Subject Lines (5)",
+        "post": "Exactly 5 email subject lines on separate lines, each one complete, each labeled with a psychological lever, each mentioning ${bName} or the actual product/service. Format each line as 'Lever: subject line text'. Use these 5 levers in this order: Curiosity, Vulnerability, Specificity, Boldness, Warmth. Each line must read like a real person sent it — not a marketing automation. NO clickbait. NO 'Don't open this email'.",
+        "why_it_works": "2 complete sentences on how the sequence of levers moves a reader from intrigue to trust for ${bName}'s specific audience."
       },
       {
-        "platform": "Unexpected Touchpoint",
-        "post": "Complete copy for the unexpected brand touchpoint most relevant to ${bName} (packaging insert for product brands, onboarding email for service brands, 404 page for digital brands, etc.). Every sentence complete.",
-        "why_it_works": "2 complete sentences on why this touchpoint matters for this business type."
+        "platform": "Unexpected Brand Touchpoint",
+        "post": "Fully written copy for the ONE touchpoint most specific to ${bName}'s business type — packaging insert for product brands, onboarding email for service/SaaS brands, order confirmation for commerce, a handwritten-style note for hospitality, a 404 page for digital products, a voicemail script for service. Pick the most on-brand one and write it completely. 120-180 words. Every sentence complete. Must feel like only ${bName} could have sent this.",
+        "why_it_works": "2 complete sentences. First: why this specific touchpoint matters disproportionately for ${bName}'s business type. Second: how this specific copy reinforces the positioning in a moment competitors usually waste."
       }
     ]
   }
@@ -1173,19 +1288,17 @@ function displayResults(d){
   document.getElementById('emails-body').innerHTML=`
     <div class="r-block fade-in" style="text-align:center;padding:60px 20px;">
       <div class="r-label">What Happens Next</div>
-      <h3 style="font-size:28px;line-height:1.3;margin-bottom:20px">Your playbook, case study, and content strategy have been sent to <em>${uEmail}</em></h3>
-      <p style="font-size:17px;line-height:1.7;max-width:560px;margin:0 auto 30px;color:var(--text-mid)">Over the next 5 days, you'll receive a daily guide in your inbox — each one designed to help you turn your brand positioning into real moves. Not theory. Things you can do this week.</p>
-      <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:32px;max-width:480px;margin:0 auto;text-align:left;">
-        <p style="font-size:14px;letter-spacing:0.1em;text-transform:uppercase;color:var(--red);font-weight:600;margin-bottom:16px">Your 5-Day Guide</p>
-        <div style="display:flex;flex-direction:column;gap:14px;">
-          <div style="display:flex;align-items:flex-start;gap:12px"><span style="color:var(--red);font-weight:700;min-width:52px">Day 1</span><span style="color:var(--text-mid)">How to use your positioning today — one exercise that makes everything else easier</span></div>
-          <div style="display:flex;align-items:flex-start;gap:12px"><span style="color:var(--red);font-weight:700;min-width:52px">Day 2</span><span style="color:var(--text-mid)">The one-page brand brief — how to make anyone "get" ${bName} in 5 minutes</span></div>
-          <div style="display:flex;align-items:flex-start;gap:12px"><span style="color:var(--red);font-weight:700;min-width:52px">Day 3</span><span style="color:var(--text-mid)">Writing in your brand voice — even when you don't feel inspired</span></div>
-          <div style="display:flex;align-items:flex-start;gap:12px"><span style="color:var(--red);font-weight:700;min-width:52px">Day 4</span><span style="color:var(--text-mid)">The one piece of content to create and post this week</span></div>
-          <div style="display:flex;align-items:flex-start;gap:12px"><span style="color:var(--red);font-weight:700;min-width:52px">Day 5</span><span style="color:var(--text-mid)">The bigger picture — what to do next with your positioning</span></div>
+      <h3 style="font-size:30px;line-height:1.2;margin-bottom:22px">Your Brand Positioning Kit is on its way to <em>${uEmail}</em></h3>
+      <p style="font-size:17px;line-height:1.75;max-width:580px;margin:0 auto 36px;color:var(--text-mid)">Your Playbook, Growth Case Study, and Content Strategy — written specifically for ${bName} — will arrive in your inbox as a single PDF you can keep, share with your team, and work from. No templates. No generic frameworks dressed up with your name at the top.</p>
+      <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:32px;max-width:520px;margin:0 auto;text-align:left;">
+        <p style="font-size:13px;letter-spacing:0.14em;text-transform:uppercase;color:var(--red);font-weight:700;margin-bottom:18px">What's Inside Your Kit</p>
+        <div style="display:flex;flex-direction:column;gap:16px;">
+          <div style="display:flex;align-items:flex-start;gap:14px"><span style="color:var(--red);font-weight:700;font-size:20px;min-width:28px">1.</span><div><strong style="color:var(--text-mid);display:block;margin-bottom:4px">The Brand Playbook</strong><span style="color:rgba(255,255,255,0.45);font-size:14px;line-height:1.65">Your archetype, positioning, core message, voice, audience insight and the two moves to make this week.</span></div></div>
+          <div style="display:flex;align-items:flex-start;gap:14px"><span style="color:var(--red);font-weight:700;font-size:20px;min-width:28px">2.</span><div><strong style="color:var(--text-mid);display:block;margin-bottom:4px">Your Growth Case Study</strong><span style="color:rgba(255,255,255,0.45);font-size:14px;line-height:1.65">An editorial strategy piece written about ${bName} — cultural hook, deep analysis, and why this compounds.</span></div></div>
+          <div style="display:flex;align-items:flex-start;gap:14px"><span style="color:var(--red);font-weight:700;font-size:20px;min-width:28px">3.</span><div><strong style="color:var(--text-mid);display:block;margin-bottom:4px">A Full Content Strategy</strong><span style="color:rgba(255,255,255,0.45);font-size:14px;line-height:1.65">Three pillars and five ready-to-use posts written in your voice, for the actual platforms you're trying to win on.</span></div></div>
         </div>
       </div>
-      <p style="margin-top:30px;font-size:15px;color:rgba(255,255,255,0.4)">Check your inbox (and spam folder, just in case).</p>
+      <p style="margin-top:32px;font-size:15px;color:rgba(255,255,255,0.4)">Check your inbox (and spam folder, just in case). If it hasn't arrived in 10 minutes, reply to any Bidya email and we'll resend.</p>
     </div>`;
 }
 

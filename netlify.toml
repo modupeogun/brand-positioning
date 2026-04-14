@@ -10,3 +10,8 @@
   from = "/api/generate"
   to = "/.netlify/functions/generate"
   status = 200
+
+[[redirects]]
+  from = "/api/send-kit"
+  to = "/.netlify/functions/send-kit"
+  status = 200
