@@ -32,7 +32,7 @@ export default async function handler(req) {
 
   try {
     const body = await req.json();
-    const { prompt, system } = body;
+    const { prompt, system, max_tokens, model } = body;
 
     if (!prompt || typeof prompt !== "string") {
       return new Response(
@@ -41,9 +41,12 @@ export default async function handler(req) {
       );
     }
 
+    // Default to Haiku 4.5 — it's ~3x faster than Sonnet and keeps each call
+    // comfortably under Netlify's 26s synchronous function timeout. The client
+    // can override with { model: "claude-sonnet-4-5" } per-call if needed.
     const requestBody = {
-      model: "claude-sonnet-4-5",
-      max_tokens: 8096,
+      model: model || "claude-haiku-4-5-20251001",
+      max_tokens: Math.min(max_tokens || 3500, 4096),
       messages: [{ role: "user", content: prompt }],
     };
 
@@ -52,7 +55,7 @@ export default async function handler(req) {
       requestBody.system = system;
     }
 
-    console.log("Calling Anthropic API with model:", requestBody.model, "prompt length:", prompt.length);
+    console.log("Calling Anthropic API with model:", requestBody.model, "max_tokens:", requestBody.max_tokens, "prompt length:", prompt.length);
 
     const response = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
