@@ -693,14 +693,7 @@ textarea::placeholder,input::placeholder{color:var(--text-faint);}
 <div id="loading">
   <div class="loader-ring"></div>
   <p class="loader-h">Reading your brand's DNA…</p>
-  <p class="loader-sub">Going deep — not just positioning, but the story your brand is made to tell.</p>
-  <div class="loader-steps">
-    <p class="loader-step" id="ls1">→ Assigning your storytelling model</p>
-    <p class="loader-step" id="ls2">→ Writing your brand playbook</p>
-    <p class="loader-step" id="ls3">→ Building your growth case study</p>
-    <p class="loader-step" id="ls4">→ Crafting your 5 content pieces</p>
-    <p class="loader-step" id="ls5">→ Writing your 5-day email series</p>
-  </div>
+  <p class="loader-sub" id="loader-witty">Decoding the good stuff…</p>
 </div>
 
 <!-- ══ RESULTS ══ -->
@@ -797,16 +790,16 @@ function openCase(id){
 function closeCase(){document.getElementById('case-reader').style.display='none';showPage('cases');}
 
 const Qs=[
-  {id:"brand_industry",step:"01 — Foundation",text:"What's your brand called, and what does it actually do?",sub:"Be plain about it. No pitch language — just tell us what it is and who it's for.",type:"text",placeholder:"e.g. Oríkì — premium skincare using indigenous Nigerian botanicals for women who want to feel at home in their skin."},
-  {id:"customer_truth",step:"02 — Your People",text:"Describe the person who truly gets what you do.",sub:"Not a demographic. A real human. What's going on in their life when they find you?",type:"text",placeholder:"e.g. She's 34, built a career on her own terms, finally has income to choose quality — but hasn't found a brand that understands her life."},
-  {id:"transformation",step:"03 — The Change",text:"What changes for someone after they find your brand?",sub:"Not just what they buy — how do they feel? What becomes possible that wasn't before?",type:"text",placeholder:"e.g. They stop second-guessing their choices. They feel seen, not sold to. They start recommending us before we even ask."},
-  {id:"origin",step:"04 — Origin",text:"Why does this brand exist? What made you start it?",sub:"The honest version — not the polished one. The reason you couldn't not do it.",type:"text",placeholder:"e.g. I couldn't find a skincare brand that spoke to my grandmother's recipes and my modern life at the same time. So I built it."},
-  {id:"difference",step:"05 — The Edge",text:"What do you do that most others in your space don't bother with?",sub:"Could be a process, a belief, a refusal. What's the thing you won't compromise on?",type:"text",placeholder:"e.g. We never use a formula we haven't personally tested for a full season. And we never promise what we can't deliver."},
-  {id:"content_feeling",step:"06 — The Feeling",text:"When someone encounters your brand, what do you want them to feel first?",sub:"Pick the one that's closest — this shapes your entire communication approach.",type:"single",options:[{label:"Seen and understood",desc:"Like you read their diary. They feel less alone."},{label:"Quietly inspired",desc:"Not hype. A slow realisation that something is possible."},{label:"Part of something",desc:"Like they've found their people. A sense of belonging."},{label:"Curious and energised",desc:"Like the world got more interesting. They want to know more."}]},
-  {id:"brand_values",step:"07 — What You Stand For",text:"Which of these are genuinely true about your brand?",sub:"Not aspirational — actually true right now. Be honest.",type:"multi",options:["We'd rather be quiet and right than loud and wrong","We believe in showing our work, not just our results","We think beauty is in the details no one else notices","We'd turn away the wrong customer before compromising what we are","We're building something that lasts, not just something that sells","We think people deserve to be spoken to like adults","We're willing to be misunderstood by the wrong crowd","We move fast and figure things out as we go"]},
-  {id:"brand_tone",step:"08 — Your Voice",text:"If your brand were a person at a dinner party, which one would it be?",sub:"This tells us how your brand naturally communicates.",type:"single",options:[{label:"The one who listens first, then says the thing everyone was thinking",desc:"Warm. Perceptive. Their words land because they waited."},{label:"The one who tells stories that make you forget your phone",desc:"A natural narrator. Draws you in. Makes ordinary things feel epic."},{label:"The one who arrived knowing things nobody else in the room knew",desc:"Expert. Confident. Not showing off — just deeply informed."},{label:"The one who makes everyone laugh but always means something by it",desc:"Sharp. Unexpected. Uses humour to say real things."}]},
+  {id:"brand_industry",step:"01 — Foundation",text:"What's your brand called, and what does it actually do?",sub:"Keep it plain. Tell us what it is and who it's for — the way you'd describe it to a friend.",type:"text",placeholder:"e.g. Oríkì — premium skincare using indigenous Nigerian botanicals for women who want to feel at home in their skin."},
+  {id:"customer_truth",step:"02 — Your People",text:"Describe the person who truly gets what you do.",sub:"Picture a real human. What's going on in their life when they stumble into your brand?",type:"text",placeholder:"e.g. She's 34, built a career on her own terms, finally has income to choose quality — and she's been waiting for a brand that understands her life."},
+  {id:"transformation",step:"03 — The Change",text:"What changes for someone after they find your brand?",sub:"Beyond the purchase — how do they feel? What opens up for them?",type:"text",placeholder:"e.g. They stop second-guessing their choices. They feel seen. They start recommending us before we even ask."},
+  {id:"origin",step:"04 — Origin",text:"Why does this brand exist? What made you start it?",sub:"The real version. The reason you kept going when it would have been easier to stop.",type:"text",placeholder:"e.g. I couldn't find a skincare brand that spoke to my grandmother's recipes and my modern life at the same time. So I built it."},
+  {id:"difference",step:"05 — The Edge",text:"What do you do that most others in your space don't bother with?",sub:"A process, a belief, a refusal — whatever you've decided is worth the extra effort.",type:"text",placeholder:"e.g. We never ship a formula we haven't personally tested for a full season. And we only promise what we can deliver."},
+  {id:"content_feeling",step:"06 — The Feeling",text:"When someone encounters your brand, what do you want them to feel first?",sub:"Pick the one that's closest — this shapes your entire communication approach.",type:"single",options:[{label:"Seen and understood",desc:"Like you read their diary. They feel less alone for finding you."},{label:"Quietly inspired",desc:"A slow realisation that something better is actually possible."},{label:"Part of something",desc:"Like they've found their people. A small sense of belonging."},{label:"Curious and energised",desc:"Like the world just got more interesting. They want to keep exploring."}]},
+  {id:"brand_values",step:"07 — What You Stand For",text:"Which of these are genuinely true about your brand?",sub:"Be honest — pick the ones that describe how you already operate, today.",type:"multi",options:["We'd rather be quiet and right than loud and wrong","We believe in showing our work, not just our results","We think beauty is in the details no one else notices","We'd turn away the wrong customer before compromising what we are","We're building something that lasts, not just something that sells","We think people deserve to be spoken to like adults","We're willing to be misunderstood by the wrong crowd","We move fast and figure things out as we go"]},
+  {id:"brand_tone",step:"08 — Your Voice",text:"If your brand were a person at a dinner party, which one would it be?",sub:"This tells us how your brand naturally communicates.",type:"single",options:[{label:"The one who listens first, then says the thing everyone was thinking",desc:"Warm. Perceptive. Their words land because they waited."},{label:"The one who tells stories that make you forget your phone",desc:"A natural narrator. Draws you in. Makes ordinary things feel epic."},{label:"The one who arrived knowing things nobody else in the room knew",desc:"Expert. Quietly confident. Deeply informed without needing to prove it."},{label:"The one who makes everyone laugh but always means something by it",desc:"Sharp. Unexpected. Humour with a point."}]},
   {id:"content_comfort",step:"09 — Content Honesty",text:"How comfortable is your brand being personal, unpolished, or vulnerable in public?",sub:"1 = curated and professional / 10 = raw and unfiltered",type:"scale",min:1,max:10,minLabel:"Curated & controlled",maxLabel:"Raw & unfiltered"},
-  {id:"ambition",step:"10 — The Long Game",text:"What does your brand stand for in 5 years — beyond revenue?",sub:"If someone wrote a real case study about you then, what would the headline say?",type:"text",placeholder:"e.g. The brand that changed how African wellness was perceived globally — by never chasing a Western template."}
+  {id:"ambition",step:"10 — The Long Game",text:"What does your brand stand for in 5 years — beyond revenue?",sub:"If someone wrote a real case study about you then, what would the headline say?",type:"text",placeholder:"e.g. The brand that changed how African wellness was perceived globally — by refusing to follow a Western template."}
 ];
 
 let cQ=0,answers={},selMulti=[],uName="",bName="",uEmail="";
@@ -901,9 +894,49 @@ async function submitEmail(){
   document.getElementById('sbtn').disabled=true;
   document.getElementById('email-gate').style.display='none';
   document.getElementById('loading').style.display='flex';
-  ['ls1','ls2','ls3','ls4','ls5'].forEach((id,i)=>setTimeout(()=>document.getElementById(id).classList.add('active'),i*2500));
+  startWittyLoader();
   await generateAll();
+  stopWittyLoader();
 }
+
+// Rotating loading phrases — on-brand, witty, nothing generic.
+const WITTY_PHRASES=[
+  "Extracting your brand DNA…",
+  "Cross-referencing your vibe with 12 archetypes…",
+  "Checking for clichés (deleting them)…",
+  "Running your origin story through the romance filter…",
+  "Whispering to your ideal customer…",
+  "Interrogating the \"what makes you different\" claim…",
+  "Consulting the ghost of every brand that tried this…",
+  "Teaching the algorithm to care about your story…",
+  "Convincing a strategist to write for free (they said yes)…",
+  "Pouring conviction into a strategy-shaped mould…",
+  "Asking \"what if, but braver\"…",
+  "Archiving the boring version of this…",
+  "Mixing metaphors. Keeping the good ones…",
+  "Hunting the one true sentence your brand needs…",
+  "Translating instincts into a positioning statement…",
+  "Wrangling the five deliverables. They're cooperating…",
+  "Refusing to use the word \"authentic\"…",
+  "Making the numbers feel like feelings…",
+  "Choosing the archetype your brand was always going to be…",
+  "Writing something your competitor will screenshot…",
+  "Double-checking it doesn't sound like a LinkedIn post…",
+  "Almost there. The good stuff is loading…"
+];
+let wittyTimer=null;
+function startWittyLoader(){
+  const el=document.getElementById('loader-witty');
+  if(!el)return;
+  let idx=Math.floor(Math.random()*WITTY_PHRASES.length);
+  el.textContent=WITTY_PHRASES[idx];
+  wittyTimer=setInterval(()=>{
+    idx=(idx+1+Math.floor(Math.random()*3))%WITTY_PHRASES.length;
+    el.style.opacity='0';
+    setTimeout(()=>{el.textContent=WITTY_PHRASES[idx];el.style.opacity='1';},220);
+  },2200);
+}
+function stopWittyLoader(){if(wittyTimer){clearInterval(wittyTimer);wittyTimer=null;}}
 
 async function generateAll(){
   try{
